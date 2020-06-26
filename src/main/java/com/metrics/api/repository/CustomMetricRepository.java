@@ -1,6 +1,7 @@
 package com.metrics.api.repository;
 
 
+import com.metrics.api.constants.ErrorCodes;
 import com.metrics.api.datatransferobjects.MetricItemDTO;
 import com.metrics.api.model.MetricItem;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class CustomMetricRepository implements MetricRepository {
+
 
     private final ConcurrentHashMap<UUID, MetricItem> store = new ConcurrentHashMap<>();
 
@@ -30,7 +32,7 @@ public class CustomMetricRepository implements MetricRepository {
 
         // Check if name already exists
         if (store.values().contains(metricItem)) {
-            throw new MetricAlreadyExistsException("Metric Already Exists");
+            throw new MetricAlreadyExistsException(ErrorCodes.METRIC_ALREADY_EXIST);
         }
 
         store.put(uuid, metricItem);
@@ -51,7 +53,7 @@ public class CustomMetricRepository implements MetricRepository {
         if (store.get(UUID.fromString(id)) != null) {
             return store.get(UUID.fromString(id));
         } else {
-            throw new MetricDoestNotExistException();
+            throw new MetricDoestNotExistException(ErrorCodes.METRIC_DOES_NOT_EXIST);
         }
     }
 
@@ -72,7 +74,7 @@ public class CustomMetricRepository implements MetricRepository {
 
 
         } else {
-            throw new MetricDoestNotExistException();
+            throw new MetricDoestNotExistException(ErrorCodes.METRIC_DOES_NOT_EXIST);
         }
     }
 
@@ -92,7 +94,7 @@ public class CustomMetricRepository implements MetricRepository {
             List<Double> values = item.getValues();
             values.add(metricData);
         } else {
-            throw new MetricDoestNotExistException();
+            throw new MetricDoestNotExistException(ErrorCodes.METRIC_DOES_NOT_EXIST);
         }
         return item;
     }

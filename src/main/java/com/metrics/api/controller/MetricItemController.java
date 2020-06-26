@@ -1,6 +1,7 @@
 package com.metrics.api.controller;
 
 
+import com.metrics.api.constants.ErrorCodes;
 import com.metrics.api.datatransferobjects.MetricItemDTO;
 import com.metrics.api.model.MetricItem;
 import com.metrics.api.repository.MetricAlreadyExistsException;
@@ -28,7 +29,10 @@ public class MetricItemController {
 
 
     /**
-     * API to create a metric
+     * API to Register Metric
+     * @param metricItemDTO
+     * @param response MetricItem ( Name , List of  Double , UUID)
+     * @return
      */
     @PostMapping("/metrics")
     public MetricItem saveMetric(@RequestBody MetricItemDTO metricItemDTO, HttpServletResponse response) {
@@ -51,7 +55,10 @@ public class MetricItemController {
     }
 
     /**
-     * API to retrieve a metric
+     * API to retrieve details about a particular Metric
+     * @param id
+     * @param response MetricItem ( Name , UUID , List of Double Values)
+     * @return
      */
     @GetMapping("/metrics/{id}")
     public MetricItem getMetric(@PathVariable String id, HttpServletResponse response) {
@@ -59,9 +66,8 @@ public class MetricItemController {
         try {
             return customMetricRepository.find(id);
         } catch (NullPointerException | MetricDoestNotExistException | NumberFormatException e) {
-            e.printStackTrace();
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "The UUID you entered could not be found", e);
+                    HttpStatus.NOT_FOUND, ErrorCodes.UUID_NOT_FOUND, e);
 
         }
     }
@@ -80,19 +86,23 @@ public class MetricItemController {
         try {
             summaryStatistics = customMetricRepository.findStatsForMetric(id);
         } catch (NullPointerException | MetricDoestNotExistException e) {
-            e.printStackTrace();
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "The UUID you entered could not be found", e);
+                    HttpStatus.NOT_FOUND, ErrorCodes.UUID_NOT_FOUND, e);
 
         }
         return summaryStatistics;
     }
 
     /**
-     * API to update a metric
+     * API to update Metric based on new double values
+     * @param id    UUID
+     * @param metricItemDTO MetricItemDTO ( persistent enties should not be used as requestbody)
+     * @param response
+     * @return MetricItem item - Updated with new values
+     * @throws IOException
      */
     @PutMapping("/metrics/{id}")
-    public MetricItem updateMetric(@PathVariable String id, @RequestBody MetricItemDTO metricItemDTO, HttpServletResponse response) throws IOException {
+    public MetricItem updateMetric(@PathVariable String id, @RequestBody MetricItemDTO metricItemDTO, HttpServletResponse response)  {
 
         MetricItem item = null;
 
@@ -101,9 +111,8 @@ public class MetricItemController {
 
 
         } catch (MetricDoestNotExistException | NumberFormatException e) {
-            e.printStackTrace();
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "The UUID you entered could not be found", e);
+                    HttpStatus.NOT_FOUND, ErrorCodes.UUID_NOT_FOUND, e);
 
         }
         return item;
