@@ -1,8 +1,8 @@
 package com.metrics.api.repository;
 
 
-import com.goel.conference.datatransferobjects.MetricItemDTO;
-import com.goel.conference.model.MetricItem;
+import com.metrics.api.datatransferobjects.MetricItemDTO;
+import com.metrics.api.model.MetricItem;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,7 +22,7 @@ public class CustomMetricRepository implements MetricRepository {
      * @return metricItem - Newly Saved Metric Item
      */
     @Override
-    public MetricItem save(MetricItemDTO metric) throws com.goel.conference.repository.MetricAlreadyExistsException {
+    public MetricItem save(MetricItemDTO metric) throws MetricAlreadyExistsException {
         try {
             UUID uuid = UUID.randomUUID();
             List<Double> values = new ArrayList<>(Arrays.asList(Double.valueOf(metric.getValue())));
@@ -30,13 +30,13 @@ public class CustomMetricRepository implements MetricRepository {
 
             // Check if name already exists
             if(store.values().contains(metricItem)) {
-                throw new com.goel.conference.repository.MetricAlreadyExistsException("Metric Already Exists");
+                throw new MetricAlreadyExistsException("Metric Already Exists");
             }
 
             store.put(uuid, metricItem);
             return metricItem;
         }
-        catch(NullPointerException | NumberFormatException | com.goel.conference.repository.MetricAlreadyExistsException e) {
+        catch(NullPointerException | NumberFormatException | MetricAlreadyExistsException e) {
                throw e;
         }
 
