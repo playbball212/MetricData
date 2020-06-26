@@ -19,6 +19,10 @@
    
     http://localhost:8080/api/swagger-ui.html
     
+    Hashmap put and get operation time complexity is O(1) with assumption that key-value pairs are distributed across 
+    buckets. I have used the metric name as as the hash key and rest api enforces that each metric has a unique name.
+    This will guarantee O(1) operations. Therefore insert and delete will also be O(1) therefore these apis will be 
+    O(1) 
 
         
         
