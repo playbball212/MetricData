@@ -23,25 +23,21 @@ public class CustomMetricRepository implements MetricRepository {
      */
     @Override
     public MetricItem save(MetricItemDTO metric) throws MetricAlreadyExistsException {
-        try {
-            UUID uuid = UUID.randomUUID();
-            List<Double> values = new ArrayList<>(Arrays.asList(Double.valueOf(metric.getValue())));
-            MetricItem metricItem = new MetricItem(uuid, metric.getName(), values);
 
-            // Check if name already exists
-            if(store.values().contains(metricItem)) {
-                throw new MetricAlreadyExistsException("Metric Already Exists");
-            }
+        UUID uuid = UUID.randomUUID();
+        List<Double> values = new ArrayList<>(Arrays.asList(Double.valueOf(metric.getValue())));
+        MetricItem metricItem = new MetricItem(uuid, metric.getName(), values);
 
-            store.put(uuid, metricItem);
-            return metricItem;
+        // Check if name already exists
+        if (store.values().contains(metricItem)) {
+            throw new MetricAlreadyExistsException("Metric Already Exists");
         }
-        catch(NullPointerException | NumberFormatException | MetricAlreadyExistsException e) {
-               throw e;
-        }
+
+        store.put(uuid, metricItem);
+        return metricItem;
+
 
     }
-
 
 
     /**
@@ -51,7 +47,7 @@ public class CustomMetricRepository implements MetricRepository {
      * @return MetricItem -  containing values and name of metric
      */
     @Override
-    public MetricItem find(String id) throws MetricDoestNotExistException, NumberFormatException {
+    public MetricItem find(String id) throws MetricDoestNotExistException {
         if (store.get(UUID.fromString(id)) != null) {
             return store.get(UUID.fromString(id));
         } else {
@@ -67,13 +63,13 @@ public class CustomMetricRepository implements MetricRepository {
      * @throws MetricDoestNotExistException
      */
     @Override
-    public DoubleSummaryStatistics findStatsForMetric(String id) throws MetricDoestNotExistException, NumberFormatException {
+    public DoubleSummaryStatistics findStatsForMetric(String id) throws MetricDoestNotExistException {
         MetricItem item;
         if (store.get(UUID.fromString(id)) != null) {
             item = store.get(UUID.fromString(id));
             List<Double> metricDataPoints = item.getValues();
-            DoubleSummaryStatistics stats = metricDataPoints.stream().mapToDouble(d -> d).summaryStatistics();
-            return stats;
+            return metricDataPoints.stream().mapToDouble(d -> d).summaryStatistics();
+
 
         } else {
             throw new MetricDoestNotExistException();
@@ -88,7 +84,7 @@ public class CustomMetricRepository implements MetricRepository {
      * @return MetricItem - Newly updated metric
      */
     @Override
-    public MetricItem update(String id, MetricItemDTO metricItemDTO) throws MetricDoestNotExistException, NumberFormatException {
+    public MetricItem update(String id, MetricItemDTO metricItemDTO) throws MetricDoestNotExistException {
         MetricItem item;
         if (store.get(UUID.fromString(id)) != null) {
             item = store.get(UUID.fromString(id));
