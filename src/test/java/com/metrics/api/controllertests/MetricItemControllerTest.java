@@ -117,60 +117,9 @@ public class MetricItemControllerTest {
 
     }
 
-    /**
-     * TEST  API_TO_GET_SUMMARY_STATISTICS HAPPY PATH ( VALID UUID)
-     * Should Return 200 AND SummaryResponse
-     */
-    @Test
-    public void find_summarystats() throws Exception, MetricDoestNotExistException {
-        UUID metricId = UUID.randomUUID();
-
-        DoubleSummaryStatistics doubleSummaryStatistics = new DoubleSummaryStatistics();
-        doubleSummaryStatistics.accept(22.00);
-        doubleSummaryStatistics.accept(25.00);
-        doubleSummaryStatistics.accept(23.00);
-
-        given(metricRepository.findStatsForMetric(metricId.toString())).willReturn(doubleSummaryStatistics);
-
-        mockMvc.perform(get("/metrics/summarystatistics/" + metricId)
-
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(jsonPath("$.average").value("23.333333333333332"))
-                .andExpect(jsonPath("$.min").value("22.0"))
-                .andExpect(jsonPath("$.max").value("25.0"))
-
-                .andExpect(status().isOk());
 
 
-    }
 
-
-    /**
-     * TEST  API_TO_GET_SUMMARY_STATISTICS NON_HAPPY_PATH ( VALID UUID)
-     * Should Return 200 AND SummaryResponse
-     */
-    @Test
-    public void find_summarystats_non_happy_path_uuid_doesnt_exist() throws Exception {
-        UUID metricId = UUID.randomUUID();
-
-        DoubleSummaryStatistics doubleSummaryStatistics = new DoubleSummaryStatistics();
-        doubleSummaryStatistics.accept(22.00);
-        doubleSummaryStatistics.accept(25.00);
-        doubleSummaryStatistics.accept(23.00);
-
-        given(metricRepository.findStatsForMetric(metricId.toString())).willThrow(MetricDoestNotExistException.class);
-
-        mockMvc.perform(get("/metrics/summarystatistics/" + metricId)
-
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
-                .andDo(print())
-
-
-                .andExpect(status().isNotFound());
-
-
-    }
 
 
     public static String asJsonString(final Object obj) {

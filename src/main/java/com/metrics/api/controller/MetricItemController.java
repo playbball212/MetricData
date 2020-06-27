@@ -45,7 +45,7 @@ public class MetricItemController {
 
         try {
             item = customMetricRepository.save(metricItemDTO);
-            if (item != null && item.isEmpty()) {
+            if (item != null && !item.isEmpty()) {
                 response.setStatus(201);
             } else {
                 response.setStatus(400);

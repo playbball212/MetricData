@@ -25,7 +25,7 @@
             
             Let M = # OF Metrics Existing  
             Let N = # OF Metrics submitted 
-            Let V[i] = Number of DataPoints for each metric 
+            Let V[M] = # of DataPoints for each metric 
         
         1.) Create a Metric - 
         
@@ -45,8 +45,8 @@
             
         3.) Get Summary Statistics - The Operation will iterate through all the Values of each metric
         
-            Time Complexity will be O( N * MAX(V[i]) - When we get the Summary Statistics we are peforming N lookups
+            Time Complexity will be O( N * MAX(V[M]) ) - When we get the Summary Statistics we are peforming N lookups
             to retrieve the lists of each metric. We are then iterating through each list to aggregate the statistics 
-            to perform some addition constant time operations. So we are performing at most N * MAX(V[i]) constant 
+            to perform some addition constant time operations. So we are performing at most N * MAX(V[N]) constant 
             time operations.  
             
