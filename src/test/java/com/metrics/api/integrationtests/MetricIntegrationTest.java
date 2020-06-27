@@ -1,20 +1,32 @@
 package com.metrics.api.integrationtests;
 
 import com.metrics.api.datatransferobjects.MetricItemDTO;
+import com.metrics.api.datatransferobjects.UpdateItemDTO;
 import com.metrics.api.model.MetricItem;
+import com.metrics.api.repository.MetricDoestNotExistException;
 import com.metrics.api.repository.MetricRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -34,33 +46,19 @@ public class MetricIntegrationTest {
     public void register_metric() {
 
         MetricItemDTO metricItemDTO = new MetricItemDTO("Ford", "200.00");
+        List<MetricItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(metricItemDTO));
 
-        ResponseEntity<MetricItem> response = testRestTemplate.postForEntity("/metrics", metricItemDTO, MetricItem.class);
+        ResponseEntity<MetricItem[]> response = testRestTemplate.postForEntity("/metrics", postedMetrics, MetricItem[].class);
 
-        MetricItem metricItem = response.getBody();
+        MetricItem[] savedMetrics = response.getBody();
 
-        assertThat(metricItem.getId()).isNotNull();
+
+        assertThat(savedMetrics).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
 
     }
 
-    /**
-     * IF I REGISTER A METRIC WITH A NAME THAT ALREADY EXISTS
-     * RETURN 400 BAD REQUEST
-     */
-    @Test
-    public void register_metric_non_happy_path() {
-
-        MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "200.00");
-        testRestTemplate.postForEntity("/metrics", metricItemDTO, MetricItem.class);
-
-
-        ResponseEntity<MetricItem> response = testRestTemplate.postForEntity("/metrics", metricItemDTO, MetricItem.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-
-
-    }
 
     /**
      * IF I REGISTER A METRIC THAT DOES NOT EXIST AND HAS A VALID DOUBLE VALUE = Metric Should be Created ( Validated Earlier)
@@ -70,53 +68,28 @@ public class MetricIntegrationTest {
     public void update_metric() {
 
         MetricItemDTO metricItemDTO = new MetricItemDTO("Facebook", "200.00");
-        ResponseEntity<MetricItem> responseEntity = testRestTemplate.postForEntity("/metrics", metricItemDTO, MetricItem.class);
+        List<MetricItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(metricItemDTO));
+        ResponseEntity<MetricItem[]> responseEntity = testRestTemplate.postForEntity("/metrics", postedMetrics, MetricItem[].class);
 
-        MetricItem metricItem = responseEntity.getBody();
+        MetricItem[] metricItems = responseEntity.getBody();
+
+        String metricId = metricItems[0].getId().toString();
 
         // Size Originally will be One
-        assertThat(metricItem.getValues()).size().isEqualTo(1);
+        assertThat(metricItems.length).isEqualTo(1);
 
-        MetricItemDTO metricItemDTO1 = new MetricItemDTO("Facebook", "210.00");
-        testRestTemplate.put("/metrics/" + metricItem.getId(), metricItemDTO, MetricItem.class);
+        UpdateItemDTO metricItemDTO1 = new UpdateItemDTO(metricItems[0].getId(), "210.00");
+        List<UpdateItemDTO> updateItemDTOList = new ArrayList<>(Arrays.asList(metricItemDTO1));
+
+        testRestTemplate.put("/metrics", updateItemDTOList);
 
 
-        ResponseEntity<MetricItem> retrieviedMetricItem = testRestTemplate.getForEntity("/metrics/" + metricItem.getId(), MetricItem.class);
+        ResponseEntity<MetricItem> retrievedMetricItems = testRestTemplate.getForEntity("/metrics/" + metricId, MetricItem.class);
 
-        MetricItem updatedItem = retrieviedMetricItem.getBody();
+        MetricItem updatedItem = retrievedMetricItems.getBody();
 
         // Size will be Two Now
         assertThat(updatedItem.getValues().size()).isEqualTo(2);
-
-
-    }
-
-
-    /**
-     *
-     * IF I UPDATE A METRIC THAT  DOES NOT EXISTS THEN THE LIST OF VALUES SHOULD BE NOT  BE UPDATED
-     */
-    @Test
-    public void update_metric_non_happy_path() {
-
-        MetricItemDTO metricItemDTO = new MetricItemDTO("Netflix", "200.00");
-        ResponseEntity<MetricItem> responseEntity = testRestTemplate.postForEntity("/metrics", metricItemDTO, MetricItem.class);
-
-        MetricItem metricItem = responseEntity.getBody();
-
-        // Size Originally will be One
-        assertThat(metricItem.getValues()).size().isEqualTo(1);
-
-        MetricItemDTO metricItemDTO1 = new MetricItemDTO("Netflix", "210.00");
-        testRestTemplate.put("/metrics/" + UUID.randomUUID(), metricItemDTO, MetricItem.class);
-
-
-        ResponseEntity<MetricItem> retrieviedMetricItem = testRestTemplate.getForEntity("/metrics/" + metricItem.getId(), MetricItem.class);
-
-        MetricItem updatedItem = retrieviedMetricItem.getBody();
-
-        // SIZE SHOULD NOT BE UPDATED
-        assertThat(updatedItem.getValues().size()).isEqualTo(1);
 
 
     }

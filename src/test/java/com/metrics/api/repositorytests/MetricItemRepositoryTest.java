@@ -1,12 +1,14 @@
 package com.metrics.api.repositorytests;
 
 import com.metrics.api.datatransferobjects.MetricItemDTO;
+import com.metrics.api.datatransferobjects.UpdateItemDTO;
 import com.metrics.api.model.MetricItem;
 import com.metrics.api.repository.CustomMetricRepository;
 import com.metrics.api.repository.MetricAlreadyExistsException;
 import com.metrics.api.repository.MetricDoestNotExistException;
 import com.metrics.api.repository.MetricRepository;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.junit.runner.RunWith;
@@ -14,8 +16,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.DoubleSummaryStatistics;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,27 +32,18 @@ public class MetricItemRepositoryTest {
      *
      * @throws MetricAlreadyExistsException
      */
+
+    @BeforeEach()
+    public void cleanupBeforeTest() {
+        customMetricRepository.clear();
+    }
+
     @Test
     public void save_metric() throws MetricAlreadyExistsException {
         MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "200.00");
-        MetricItem metricItem = customMetricRepository.save(metricItemDTO);
-        assertThat(metricItem).isNotNull();
-    }
-
-    /**
-     * Test Save  Call with invalid DOUBLE VALUE / NON HAPPY PATH
-     *
-     * @throws MetricDoestNotExistException
-     * @throws MetricAlreadyExistsException
-     */
-    @Test
-    public void save_metric_non_happy_path_invalid_double() {
-        Exception exception = assertThrows(NumberFormatException.class, () -> {
-            MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "asd");
-            MetricItem metricItem = customMetricRepository.save(metricItemDTO);
-        });
-
-        assertThat(exception.getMessage()).isNotNull();
+        List<MetricItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(metricItemDTO));
+        List<MetricItem> metricItem = customMetricRepository.save(postedMetrics);
+        assertThat(metricItem.size()).isEqualTo(1);
     }
 
 
@@ -65,7 +57,9 @@ public class MetricItemRepositoryTest {
         UUID uuid = UUID.randomUUID();
         // Save Metric
         MetricItemDTO metricItemDTO2 = new MetricItemDTO("Apple", "200.00");
-        MetricItem metricItem2 = customMetricRepository.save(metricItemDTO2);
+        List<MetricItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(metricItemDTO2));
+
+        List<MetricItem> metricItem2 = customMetricRepository.save(postedMetrics);
         Exception exception = assertThrows(MetricDoestNotExistException.class, () -> {
             MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "asd");
             MetricItem metricItem = customMetricRepository.find(uuid.toString());
@@ -84,52 +78,19 @@ public class MetricItemRepositoryTest {
      */
     @Test
     public void retrieve_metric_valid_uuid() throws MetricDoestNotExistException, MetricAlreadyExistsException {
-
         // Save Metric
         MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "200.00");
-        MetricItem metricItem = customMetricRepository.save(metricItemDTO);
+        List<MetricItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(metricItemDTO));
+
+        List<MetricItem> metricItems = customMetricRepository.save(postedMetrics);
+
+        UUID metricId = metricItems.get(0).getId();
 
         // Retrieve Metric
-        MetricItem retrievedMetric = customMetricRepository.find(metricItem.getId().toString());
-        assertThat(retrievedMetric).isEqualTo(metricItem);
+        MetricItem retrievedMetric = customMetricRepository.find(metricId.toString());
+        assertThat(retrievedMetric.getId()).isEqualTo(metricId);
     }
 
-    /**
-     * Test API with non valid Double for metric saving
-     *
-     * @throws MetricAlreadyExistsException
-     */
-    @Test
-    public void save_metric_non_valid_double_non_happy_path() {
-
-        Exception exception = assertThrows(NumberFormatException.class, () -> {
-            MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "asd");
-            MetricItem metricItem = customMetricRepository.save(metricItemDTO);
-        });
-
-        assertThat(exception.getMessage()).isNotNull();
-
-    }
-
-    /**
-     * Test API for saving a metric with a name that already exists
-     *
-     * @throws MetricAlreadyExistsException
-     */
-    @Test
-    public void save_metric_already_exists_non_happy_path() throws MetricAlreadyExistsException {
-
-        MetricItemDTO metricItemDTO2 = new MetricItemDTO("Apple", "200.00");
-        MetricItem metricItem2 = customMetricRepository.save(metricItemDTO2);
-
-        Exception exception = assertThrows(MetricAlreadyExistsException.class, () -> {
-            MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "200.20");
-            MetricItem metricItem = customMetricRepository.save(metricItemDTO);
-        });
-
-        assertThat(exception.getMessage()).isNotNull();
-
-    }
 
     /**
      * Test API for updating Metric with new value size should be greater
@@ -142,45 +103,26 @@ public class MetricItemRepositoryTest {
 
         // Save Metric
         MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "200.00");
-        MetricItem metricItem = customMetricRepository.save(metricItemDTO);
-        MetricItemDTO metricItemDTO1 = new MetricItemDTO("Apple", "210.00");
+        List<MetricItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(metricItemDTO));
 
+        List<MetricItem> metricItems = customMetricRepository.save(postedMetrics);
+        UpdateItemDTO metricItemDTO1 = new UpdateItemDTO(metricItems.get(0).getId(), "210.00");
+        List<UpdateItemDTO> updateItemDTOList = new ArrayList<>(Arrays.asList(metricItemDTO1));
+        String metricId = metricItems.get(0).getId().toString();
         // Update Metric
-        customMetricRepository.update(metricItem.getId().toString(), metricItemDTO1);
+        customMetricRepository.update(updateItemDTOList);
 
         // Retrieve Metric and assert that the size is 2
-        MetricItem retrievedMetric = customMetricRepository.find(metricItem.getId().toString());
+        MetricItem retrievedMetric = customMetricRepository.find(metricItemDTO1.getId().toString());
         assertThat(retrievedMetric.getValues().size()).isEqualTo(2);
 
 
     }
 
-    /**
-     * Update Metric With an Invalid UUID should throw MetricDoestNotExistException
-     *
-     * @throws MetricDoestNotExistException
-     * @throws MetricAlreadyExistsException
-     */
-    @Test
-    public void update_metric_invalid_uuid() throws MetricDoestNotExistException, MetricAlreadyExistsException {
-
-        // Save Metric
-        MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "200.00");
-        MetricItem metricItem = customMetricRepository.save(metricItemDTO);
-        MetricItemDTO metricItemDTO1 = new MetricItemDTO("Apple", "210.00");
-        UUID randomUUID = UUID.randomUUID();
-        MetricItem retrievedItem = null;
-        // Update Metric
-        Exception exception = assertThrows(MetricDoestNotExistException.class, () -> {
-            customMetricRepository.update(randomUUID.toString(), metricItemDTO1);
-
-        });
-
-
-    }
 
     /**
      * Test SUMMARY STATISTICS METHOD WITH VALID UUID. Should return a non null value.
+     *
      * @throws MetricDoestNotExistException
      * @throws MetricAlreadyExistsException
      */
@@ -189,13 +131,16 @@ public class MetricItemRepositoryTest {
 
         // Save Metric
         MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "200.00");
-        MetricItem metricItem = customMetricRepository.save(metricItemDTO);
         MetricItemDTO metricItemDTO1 = new MetricItemDTO("Apple", "210.00");
 
-        // Update Metric
-        customMetricRepository.update(metricItem.getId().toString(), metricItemDTO1);
+        List<MetricItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(metricItemDTO, metricItemDTO1));
+        List<MetricItem> metricItems = customMetricRepository.save(postedMetrics);
 
-        DoubleSummaryStatistics statistics = customMetricRepository.findStatsForMetric(metricItem.getId().toString());
+        UUID metricId = metricItems.get(0).getId();
+
+        // Update Metric
+
+        DoubleSummaryStatistics statistics = customMetricRepository.findStatsForMetric(metricId.toString());
 
         assertThat(statistics).isNotNull();
 
@@ -203,6 +148,7 @@ public class MetricItemRepositoryTest {
 
     /**
      * Test a non valid UUID for MetricDoesNotExistException
+     *
      * @throws MetricDoestNotExistException
      * @throws MetricAlreadyExistsException
      */

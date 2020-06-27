@@ -13,20 +13,23 @@ import java.util.UUID;
 @NoArgsConstructor
 public class MetricItem {
 
-    private UUID id;
-    private String name;
-    private List<Double> values;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MetricItem that = (MetricItem) o;
-        return name.equals(that.name);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id);
     }
+
+    private UUID id;
+    private String name;
+    private List<Double> values;
+
+
 }

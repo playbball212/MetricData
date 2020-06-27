@@ -3,6 +3,7 @@ package com.metrics.api.controller;
 
 import com.metrics.api.constants.ErrorCodes;
 import com.metrics.api.datatransferobjects.MetricItemDTO;
+import com.metrics.api.datatransferobjects.UpdateItemDTO;
 import com.metrics.api.model.MetricItem;
 import com.metrics.api.repository.MetricAlreadyExistsException;
 import com.metrics.api.repository.MetricDoestNotExistException;
@@ -15,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.DoubleSummaryStatistics;
+import java.util.List;
 
 @RestController
 public class MetricItemController {
@@ -36,13 +38,15 @@ public class MetricItemController {
      * @return
      */
     @PostMapping("/metrics")
-    public MetricItem saveMetric(@RequestBody MetricItemDTO metricItemDTO, HttpServletResponse response) {
-        MetricItem item = null;
+    public List<MetricItem> saveMetric(@RequestBody List<MetricItemDTO> metricItemDTO, HttpServletResponse response) {
+        List<MetricItem> item = null;
 
         try {
             item = customMetricRepository.save(metricItemDTO);
-            if (item.getId() != null) {
+            if (item != null && item.size() > 0) {
                 response.setStatus(201);
+            } else {
+                response.setStatus(400);
             }
         } catch (NullPointerException | NumberFormatException | MetricAlreadyExistsException e) {
 
@@ -54,6 +58,7 @@ public class MetricItemController {
         return item;
 
     }
+
 
     /**
      * API to retrieve details about a particular Metric
@@ -74,6 +79,7 @@ public class MetricItemController {
         }
     }
 
+
     /**
      * API to retrieve Summary Statistics
      *
@@ -82,7 +88,7 @@ public class MetricItemController {
      * @return
      */
     @GetMapping("/metrics/summarystatistics/{id}")
-    public DoubleSummaryStatistics getSummaryStatistics(@PathVariable String id, HttpServletResponse response) {
+    public DoubleSummaryStatistics getSummaryStatistics(@PathVariable String id,HttpServletResponse response) {
 
         DoubleSummaryStatistics summaryStatistics = null;
         try {
@@ -98,19 +104,18 @@ public class MetricItemController {
     /**
      * API to update Metric based on new double values
      *
-     * @param id            UUID
-     * @param metricItemDTO MetricItemDTO ( persistent enties should not be used as requestbody)
-     * @param response
+     * @param
+     * @param metricItems MetricItemDTO ( persistent enties should not be used as requestbody)
      * @return MetricItem item - Updated with new values
      * @throws IOException
      */
-    @PutMapping("/metrics/{id}")
-    public MetricItem updateMetric(@PathVariable String id, @RequestBody MetricItemDTO metricItemDTO, HttpServletResponse response) {
+    @PutMapping("/metrics")
+    public List<MetricItem> updateMetric( @RequestBody List<UpdateItemDTO> metricItems) {
 
-        MetricItem item = null;
+        List<MetricItem> item = null;
 
         try {
-            item = customMetricRepository.update(id, metricItemDTO);
+            item = customMetricRepository.update(metricItems);
 
 
         } catch (MetricDoestNotExistException | NumberFormatException e) {

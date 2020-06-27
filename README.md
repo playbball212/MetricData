@@ -19,10 +19,34 @@
    
     http://localhost:8080/api/swagger-ui.html
     
-    Hashmap put and get operation time complexity is O(1) with assumption that key-value pairs are distributed across 
-    buckets. I have used the metric name as as the hash key and rest api enforces that each metric has a unique name.
-    This will guarantee O(1) operations. Therefore insert and delete will also be O(1) therefore these apis will be 
-    O(1) 
+------------------ API RUN TIME ANALYSIS ----------------------------------------------------
 
         
+            
+            Let M = # OF Metrics Existing  
+            Let N = # OF Metrics submitted 
+            Let V[i] = Number of DataPoints for each metric 
         
+        1.) Create a Metric - 
+        
+            
+            Time Complexity will be O(N) because were peforming N put operations which are constant time. As well as 
+            N Arraylist.add which takes O(1). 
+            
+            Space Complexity will O(N+M) because we need space for existing metrics as well as submitted metrics 
+         
+        
+        2.) Update a Metric - 
+        
+            Time Complexity will be O(N) because we are performing N lookups and each lookup in our hashmap will take
+            constant time as well as updating the HashMap. Each ArrayList.add will take constant time as well. 
+            
+            Space Complexity will be O(N+M)
+            
+        3.) Get Summary Statistics - The Operation will iterate through all the Values of each metric
+        
+            Time Complexity will be O( N * MAX(V[i]) - When we get the Summary Statistics we are peforming N lookups
+            to retrieve the lists of each metric. We are then iterating through each list to aggregate the statistics 
+            to perform some addition constant time operations. So we are performing at most N * MAX(V[i]) constant 
+            time operations.  
+            

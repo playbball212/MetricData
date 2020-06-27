@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.metrics.api.controller.MetricItemController;
 import com.metrics.api.datatransferobjects.MetricItemDTO;
+import com.metrics.api.datatransferobjects.UpdateItemDTO;
 import com.metrics.api.model.MetricItem;
-import com.metrics.api.repository.MetricAlreadyExistsException;
 import com.metrics.api.repository.MetricDoestNotExistException;
 import com.metrics.api.repository.MetricRepository;
 import org.junit.jupiter.api.Test;
@@ -49,63 +49,21 @@ public class MetricItemControllerTest {
     public void register_metric() throws Exception {
 
         MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "200.00");
-        UUID metricId = UUID.randomUUID();
         List<Double> values = new ArrayList<>(Arrays.asList(Double.valueOf(metricItemDTO.getValue())));
-        MetricItem metricItem = new MetricItem(metricId, metricItemDTO.getName(), values);
-        given(metricRepository.save(metricItemDTO)).willReturn(metricItem);
+
+        MetricItem metricItem = new MetricItem(UUID.randomUUID(), metricItemDTO.getName(), values);
+        List<MetricItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(metricItemDTO));
+        List<MetricItem> createdMetrics = new ArrayList<>(Arrays.asList(metricItem));
+        given(metricRepository.save(new ArrayList<MetricItemDTO>(Arrays.asList(metricItemDTO)))).willReturn(createdMetrics);
 
         mockMvc.perform(post("/metrics")
-                .content(asJsonString(metricItemDTO))
+                .content(asJsonString(postedMetrics))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$.name").isString())
-                .andExpect(jsonPath("$.values").isArray())
-                .andExpect(jsonPath("$.name").value("Apple"))
+
                 .andExpect(status().isCreated());
 
-        Mockito.verify(metricRepository, times(1)).save(any(MetricItemDTO.class));
-    }
-
-    /**
-     * TEST API TO REGISTER_METRIC_NON_HAPPY_PATH ( Non Double Value Scenario)
-     * Should Return BAD REQUEST STATUS 400
-     */
-    @Test
-    public void register_metric_non_happy_path() throws Exception {
-
-        MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "ABC");
-
-        UUID metricId = UUID.randomUUID();
-
-        given(metricRepository.save(any(MetricItemDTO.class))).willThrow(NumberFormatException.class);
-
-        mockMvc.perform(post("/metrics")
-                .content(asJsonString(metricItemDTO))
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-
-    }
-
-    /**
-     * TEST API TO REGISTER_METRIC_NON_HAPPY_PATH ( Metric Already Exists)
-     * Should Return BAD REQUEST STATUS 400
-     */
-    @Test
-    public void register_metric_arleady_exists_non_happy_path() throws Exception {
-
-        MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "ABC");
-
-        UUID metricId = UUID.randomUUID();
-
-        given(metricRepository.save(metricItemDTO)).willThrow(MetricAlreadyExistsException.class);
-
-        mockMvc.perform(post("/metrics")
-                .content(asJsonString(metricItemDTO))
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-
+        Mockito.verify(metricRepository, times(1)).save(any(List.class));
     }
 
 
@@ -118,69 +76,19 @@ public class MetricItemControllerTest {
         UUID metricId = UUID.randomUUID();
         List<Double> values = new ArrayList<Double>(Arrays.asList(232.300));
         MetricItem metricItem = new MetricItem(metricId, "Apple", values);
-        MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "123.00");
+        List<MetricItem> metricItemList = new ArrayList<>(Arrays.asList(metricItem));
+        UpdateItemDTO metricItemDTO = new UpdateItemDTO(metricId, "123.00");
+        List<UpdateItemDTO> updateItemDTOS = new ArrayList<>(Arrays.asList(metricItemDTO));
 
+        given(metricRepository.update(updateItemDTOS)).willReturn(metricItemList);
 
-        given(metricRepository.update(metricId.toString(), metricItemDTO)).willReturn(metricItem);
-
-        mockMvc.perform(put("/metrics/" + metricId)
-                .content(asJsonString(metricItemDTO))
+        mockMvc.perform(put("/metrics")
+                .content(asJsonString(updateItemDTOS))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        Mockito.verify(metricRepository, times(1)).update(any(String.class), any(MetricItemDTO.class));
-
-
-    }
-
-    /**
-     * TEST  API_TO_Update_Metric_NON_HAPPY_PATH ( Given a NON Valid UUID / Valid Double Value)
-     * Should Return 400
-     */
-    @Test
-    public void update_metric_non_happy_path() throws Exception, MetricDoestNotExistException {
-        UUID metricId = UUID.randomUUID();
-        List<Double> values = new ArrayList<Double>(Arrays.asList(232.300));
-        MetricItem metricItem = new MetricItem(metricId, "Apple", values);
-        MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "123.00");
-
-
-        given(metricRepository.update(metricId.toString(), metricItemDTO)).willThrow(NumberFormatException.class);
-
-        mockMvc.perform(put("/metrics/" + metricId)
-                .content(asJsonString(metricItemDTO))
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-
-
-    }
-
-
-    /**
-     * TEST  API_TO_RETRIEVE_METRIC_DETAILS_HAPPY_PATH
-     * Should Return MetricItem
-     */
-    @Test
-    public void find_metric() throws Exception, MetricDoestNotExistException {
-        UUID metricId = UUID.randomUUID();
-        List<Double> values = new ArrayList<Double>(Arrays.asList(232.300));
-        MetricItem metricItem = new MetricItem(metricId, "Apple", values);
-        MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "123.00");
-
-
-        given(metricRepository.find(metricId.toString())).willReturn(metricItem);
-
-        mockMvc.perform(get("/metrics/" + metricId)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(jsonPath("$.name").value("Apple"))
-
-                .andExpect(status().isOk());
-
-
-        Mockito.verify(metricRepository, times(1)).find(metricId.toString());
+        Mockito.verify(metricRepository, times(1)).update(updateItemDTOS);
 
 
     }
