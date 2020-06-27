@@ -31,19 +31,16 @@ public class CustomMetricRepository implements MetricRepository {
 
         List<MetricItem> savedMetrics = new ArrayList<>();
 
-        try {
-            for (int i = 0; i < metricItems.size(); i++) {
-                SaveItemDTO saveItemDTO = metricItems.get(i);
-                List<Double> values = new ArrayList<>(Arrays.asList(Double.valueOf(saveItemDTO.getValue())));
-                UUID metricId = UUID.randomUUID();
-                MetricItem metricItem = new MetricItem(metricId, saveItemDTO.getName(), values);
-                store.put(metricId, metricItem);
-                savedMetrics.add(metricItem);
-            }
 
-        } catch (Exception e) {
-            return savedMetrics;
+        for (int i = 0; i < metricItems.size(); i++) {
+            SaveItemDTO saveItemDTO = metricItems.get(i);
+            List<Double> values = new ArrayList<>(Arrays.asList(Double.valueOf(saveItemDTO.getValue())));
+            UUID metricId = UUID.randomUUID();
+            MetricItem metricItem = new MetricItem(metricId, saveItemDTO.getName(), values);
+            store.put(metricId, metricItem);
+            savedMetrics.add(metricItem);
         }
+
 
         return savedMetrics;
 
@@ -81,13 +78,15 @@ public class CustomMetricRepository implements MetricRepository {
             DoubleSummaryStatistics doubleSummaryStatistics = values.stream().mapToDouble(d -> d).summaryStatistics();
             List<Double> sortedDouble = values.stream().sorted().collect(Collectors.toList());
             Double median = null;
+
             if (sortedDouble.size() % 2 != 0) {
                 median = sortedDouble.get(sortedDouble.size() / 2);
             } else {
                 median = (sortedDouble.get((sortedDouble.size() - 1) / 2) + sortedDouble.get((sortedDouble.size() / 2)));
             }
 
-            SummaryStatistics summaryStat = new SummaryStatistics(doubleSummaryStatistics.getAverage(), median , doubleSummaryStatistics.getMax() , doubleSummaryStatistics.getMin() , uuid);
+            SummaryStatistics summaryStat = new SummaryStatistics(doubleSummaryStatistics.getAverage(), median,
+                    doubleSummaryStatistics.getMin(), doubleSummaryStatistics.getMax(), uuid);
             summaryStatistics.add(summaryStat);
         }
 

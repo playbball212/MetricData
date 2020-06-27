@@ -34,7 +34,7 @@ public class MetricItemController {
      * API to Register Metric
      *
      * @param saveItemDTO
-     * @param response      MetricItem ( Name , List of  Double , UUID)
+     * @param response    MetricItem ( Name , List of  Double , UUID)
      * @return
      */
     @PostMapping("/metrics")
@@ -43,11 +43,7 @@ public class MetricItemController {
 
         try {
             item = customMetricRepository.save(saveItemDTO);
-            if (item != null && !item.isEmpty()) {
-                response.setStatus(201);
-            } else {
-                response.setStatus(400);
-            }
+            response.setStatus(201);
         } catch (NullPointerException | NumberFormatException | MetricAlreadyExistsException e) {
 
 
@@ -83,12 +79,12 @@ public class MetricItemController {
     /**
      * API to retrieve Summary Statistics
      *
-     * @param  metricSummary of Metric
-     * @param response Summary Statics about the specified metric
+     * @param metricSummary of Metric
+     * @param response      Summary Statics about the specified metric
      * @return
      */
     @GetMapping("/metrics/summarystatistics")
-    public List<SummaryStatistics> getSummaryStatistics(@RequestBody List<String> metricSummary , HttpServletResponse response) {
+    public List<SummaryStatistics> getSummaryStatistics(@RequestBody List<String> metricSummary, HttpServletResponse response) {
 
         List<SummaryStatistics> summaryStatistics = null;
         try {
