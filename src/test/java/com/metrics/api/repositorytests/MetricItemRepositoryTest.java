@@ -120,47 +120,4 @@ public class MetricItemRepositoryTest {
     }
 
 
-    /**
-     * Test SUMMARY STATISTICS METHOD WITH VALID UUID. Should return a non null value.
-     *
-     * @throws MetricDoestNotExistException
-     * @throws MetricAlreadyExistsException
-     */
-    @Test
-    public void get_summary_statistics() throws MetricDoestNotExistException, MetricAlreadyExistsException {
-
-        // Save Metric
-        MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "200.00");
-        MetricItemDTO metricItemDTO1 = new MetricItemDTO("Apple", "210.00");
-
-        List<MetricItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(metricItemDTO, metricItemDTO1));
-        List<MetricItem> metricItems = customMetricRepository.save(postedMetrics);
-
-        UUID metricId = metricItems.get(0).getId();
-
-        // Update Metric
-
-        DoubleSummaryStatistics statistics = customMetricRepository.findStatsForMetric(metricId.toString());
-
-        assertThat(statistics).isNotNull();
-
-    }
-
-    /**
-     * Test a non valid UUID for MetricDoesNotExistException
-     *
-     * @throws MetricDoestNotExistException
-     * @throws MetricAlreadyExistsException
-     */
-    @Test
-    public void get_summary_statistics_non_happy_path() throws MetricDoestNotExistException, MetricAlreadyExistsException {
-
-
-        Exception exception = assertThrows(MetricDoestNotExistException.class, () -> {
-            customMetricRepository.findStatsForMetric(UUID.randomUUID().toString());
-
-        });
-
-    }
-
 }

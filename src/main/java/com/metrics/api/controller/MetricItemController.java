@@ -5,6 +5,8 @@ import com.metrics.api.constants.ErrorCodes;
 import com.metrics.api.datatransferobjects.MetricItemDTO;
 import com.metrics.api.datatransferobjects.UpdateItemDTO;
 import com.metrics.api.model.MetricItem;
+import com.metrics.api.model.MetricSummary;
+import com.metrics.api.model.SummaryStatistics;
 import com.metrics.api.repository.MetricAlreadyExistsException;
 import com.metrics.api.repository.MetricDoestNotExistException;
 import com.metrics.api.repository.MetricRepository;
@@ -43,7 +45,7 @@ public class MetricItemController {
 
         try {
             item = customMetricRepository.save(metricItemDTO);
-            if (item != null && item.size() > 0) {
+            if (item != null && item.isEmpty()) {
                 response.setStatus(201);
             } else {
                 response.setStatus(400);
@@ -83,16 +85,16 @@ public class MetricItemController {
     /**
      * API to retrieve Summary Statistics
      *
-     * @param id       UUID of Metric
+     * @param  metricSummary of Metric
      * @param response Summary Statics about the specified metric
      * @return
      */
-    @GetMapping("/metrics/summarystatistics/{id}")
-    public DoubleSummaryStatistics getSummaryStatistics(@PathVariable String id,HttpServletResponse response) {
+    @GetMapping("/metrics/summarystatistics")
+    public List<SummaryStatistics> getSummaryStatistics(@RequestBody MetricSummary metricSummary , HttpServletResponse response) {
 
-        DoubleSummaryStatistics summaryStatistics = null;
+        List<SummaryStatistics> summaryStatistics = null;
         try {
-            summaryStatistics = customMetricRepository.findStatsForMetric(id);
+            summaryStatistics = customMetricRepository.findStatsForMetric(metricSummary);
         } catch (NullPointerException | MetricDoestNotExistException e) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, ErrorCodes.UUID_NOT_FOUND, e);
@@ -110,7 +112,7 @@ public class MetricItemController {
      * @throws IOException
      */
     @PutMapping("/metrics")
-    public List<MetricItem> updateMetric( @RequestBody List<UpdateItemDTO> metricItems) {
+    public List<MetricItem> updateMetric(@RequestBody List<UpdateItemDTO> metricItems) {
 
         List<MetricItem> item = null;
 

@@ -5,10 +5,13 @@ import com.metrics.api.constants.ErrorCodes;
 import com.metrics.api.datatransferobjects.MetricItemDTO;
 import com.metrics.api.datatransferobjects.UpdateItemDTO;
 import com.metrics.api.model.MetricItem;
+import com.metrics.api.model.MetricSummary;
+import com.metrics.api.model.SummaryStatistics;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -66,22 +69,31 @@ public class CustomMetricRepository implements MetricRepository {
     /**
      * API to retrieve Summary Statistics ( Time Complexity O( # OF DataPoints in Metrics) , Space Complexiity O(# OF METRICS)
      *
-     * @param id UUID of Metric
+     * @param metricSummary List of UUIds to view Summaries
      * @return Summary Statistics of Metric including mean , median , minimum value , and maximum value
      * @throws MetricDoestNotExistException
      */
     @Override
-    public DoubleSummaryStatistics findStatsForMetric(String id) throws MetricDoestNotExistException {
-        MetricItem item;
-        if (store.get(UUID.fromString(id)) != null) {
-            item = store.get(UUID.fromString(id));
-            List<Double> metricDataPoints = item.getValues();
-            return metricDataPoints.stream().mapToDouble(d -> d).summaryStatistics();
+    public List<SummaryStatistics> findStatsForMetric(MetricSummary metricSummary) throws MetricDoestNotExistException {
+        List<SummaryStatistics> summaryStatistics = new ArrayList<>();
+        List<String> uuids = metricSummary.getMetricIds();
+        for (int i = 0; i < uuids.size(); i++) {
+            String uuid = uuids.get(i);
+            List<Double> values = store.get(UUID.fromString(uuid)).getValues();
+            DoubleSummaryStatistics doubleSummaryStatistics = values.stream().mapToDouble(d -> d).summaryStatistics();
+            List<Double> sortedDouble = values.stream().sorted().collect(Collectors.toList());
+            Double median = null;
+            if (sortedDouble.size() % 2 != 0) {
+                median = sortedDouble.get(sortedDouble.size() / 2);
+            } else {
+                median = (sortedDouble.get((sortedDouble.size() - 1) / 2) + sortedDouble.get((sortedDouble.size() / 2)));
+            }
 
-
-        } else {
-            throw new MetricDoestNotExistException(ErrorCodes.METRIC_DOES_NOT_EXIST);
+            SummaryStatistics summaryStat = new SummaryStatistics(doubleSummaryStatistics.getAverage(), median , doubleSummaryStatistics.getMax() , doubleSummaryStatistics.getMin() , uuid);
+            summaryStatistics.add(summaryStat);
         }
+
+        return summaryStatistics;
     }
 
     /**
@@ -91,7 +103,7 @@ public class CustomMetricRepository implements MetricRepository {
      * @return MetricItem - Newly updated metric
      */
     @Override
-    public List<MetricItem> update( List<UpdateItemDTO> postedMetrics) throws MetricDoestNotExistException {
+    public List<MetricItem> update(List<UpdateItemDTO> postedMetrics) throws MetricDoestNotExistException {
         List<MetricItem> updatedMetrics = new ArrayList<>();
         for (int i = 0; i < postedMetrics.size(); i++) {
             UUID metricId = postedMetrics.get(i).getId();
