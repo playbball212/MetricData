@@ -30,16 +30,15 @@
         1.) Create a Metric - 
         
             
-            Time Complexity will be O(N) because were peforming N put operations on a HashMap which are constant time. 
-            As well as  N Arraylist.add operations which takes O(1). 
+            Time Complexity will be O(N) because were peforming N Puts on a HashMap which will take constant time. We
+            are also performing N adds into an arraylist which will also be constant time. 
             
             Space Complexity will O(N+M) because we need space for existing metrics as well as submitted metrics 
          
         
         2.) Update a Metric - 
         
-            Time Complexity will be O(N) because we are performing N lookups and each lookup in our hashmap will take
-            constant time as well as updating the HashMap. Each ArrayList.add will take constant time as well. 
+            Time Complexity will be O(N) as N  (HashMap put / get) constant time. 
             
             Space Complexity will be O(N+M)
             
@@ -47,6 +46,8 @@
         
             Time Complexity will be O( N * MAX(V[M]) ) - When we get the Summary Statistics we are peforming N lookups
             to retrieve the lists of each metric. We are then iterating through each list to aggregate the statistics 
-            to perform some addition constant time operations. So we are performing at most N * MAX(V[N]) constant 
+            to perform some arithmetic constant time operations. So we are performing at most N * MAX(V[N]) constant 
             time operations.  
+            
+            The Space Complexity will be O(N+M) 
             

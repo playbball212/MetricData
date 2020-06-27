@@ -79,11 +79,7 @@ public class CustomMetricRepository implements MetricRepository {
             List<Double> sortedDouble = values.stream().sorted().collect(Collectors.toList());
             Double median = null;
 
-            if (sortedDouble.size() % 2 != 0) {
-                median = sortedDouble.get(sortedDouble.size() / 2);
-            } else {
-                median = (sortedDouble.get((sortedDouble.size() - 1) / 2) + sortedDouble.get((sortedDouble.size() / 2)));
-            }
+            median = getMedian(sortedDouble);
 
             SummaryStatistics summaryStat = new SummaryStatistics(doubleSummaryStatistics.getAverage(), median,
                     doubleSummaryStatistics.getMin(), doubleSummaryStatistics.getMax(), uuid);
@@ -91,6 +87,22 @@ public class CustomMetricRepository implements MetricRepository {
         }
 
         return summaryStatistics;
+    }
+
+    /**
+     * Helper Method to retrieve Median depending on size of values
+     *
+     * @param sortedDouble
+     * @return
+     */
+    private Double getMedian(List<Double> sortedDouble) {
+        Double median;
+        if (sortedDouble.size() % 2 != 0) {
+            median = sortedDouble.get(sortedDouble.size() / 2);
+        } else {
+            median = (sortedDouble.get((sortedDouble.size() - 1) / 2) + sortedDouble.get((sortedDouble.size() / 2)));
+        }
+        return median;
     }
 
     /**
