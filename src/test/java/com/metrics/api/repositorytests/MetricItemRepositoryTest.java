@@ -63,6 +63,9 @@ public class MetricItemRepositoryTest {
     @Test
     public void retrieve_metric_invalid_uuid_non_happy_path() throws MetricAlreadyExistsException {
         UUID uuid = UUID.randomUUID();
+        // Save Metric
+        MetricItemDTO metricItemDTO2 = new MetricItemDTO("Apple", "200.00");
+        MetricItem metricItem2 = customMetricRepository.save(metricItemDTO2);
         Exception exception = assertThrows(MetricDoestNotExistException.class, () -> {
             MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "asd");
             MetricItem metricItem = customMetricRepository.find(uuid.toString());
@@ -97,7 +100,7 @@ public class MetricItemRepositoryTest {
      * @throws MetricAlreadyExistsException
      */
     @Test
-    public void save_metric_non_valid_double_non_happy_path() throws MetricAlreadyExistsException {
+    public void save_metric_non_valid_double_non_happy_path() {
 
         Exception exception = assertThrows(NumberFormatException.class, () -> {
             MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "asd");
@@ -116,8 +119,11 @@ public class MetricItemRepositoryTest {
     @Test
     public void save_metric_already_exists_non_happy_path() throws MetricAlreadyExistsException {
 
-        Exception exception = assertThrows(NumberFormatException.class, () -> {
-            MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "asd");
+        MetricItemDTO metricItemDTO2 = new MetricItemDTO("Apple", "200.00");
+        MetricItem metricItem2 = customMetricRepository.save(metricItemDTO2);
+
+        Exception exception = assertThrows(MetricAlreadyExistsException.class, () -> {
+            MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "200.20");
             MetricItem metricItem = customMetricRepository.save(metricItemDTO);
         });
 
