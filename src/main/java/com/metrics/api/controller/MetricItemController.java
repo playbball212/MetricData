@@ -2,10 +2,9 @@ package com.metrics.api.controller;
 
 
 import com.metrics.api.constants.ErrorCodes;
-import com.metrics.api.datatransferobjects.MetricItemDTO;
+import com.metrics.api.datatransferobjects.SaveItemDTO;
 import com.metrics.api.datatransferobjects.UpdateItemDTO;
 import com.metrics.api.model.MetricItem;
-import com.metrics.api.model.MetricSummary;
 import com.metrics.api.model.SummaryStatistics;
 import com.metrics.api.repository.MetricAlreadyExistsException;
 import com.metrics.api.repository.MetricDoestNotExistException;
@@ -17,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
 @RestController
@@ -35,16 +33,16 @@ public class MetricItemController {
     /**
      * API to Register Metric
      *
-     * @param metricItemDTO
+     * @param saveItemDTO
      * @param response      MetricItem ( Name , List of  Double , UUID)
      * @return
      */
     @PostMapping("/metrics")
-    public List<MetricItem> saveMetric(@RequestBody List<MetricItemDTO> metricItemDTO, HttpServletResponse response) {
+    public List<MetricItem> saveMetric(@RequestBody List<SaveItemDTO> saveItemDTO, HttpServletResponse response) {
         List<MetricItem> item = null;
 
         try {
-            item = customMetricRepository.save(metricItemDTO);
+            item = customMetricRepository.save(saveItemDTO);
             if (item != null && !item.isEmpty()) {
                 response.setStatus(201);
             } else {
@@ -90,7 +88,7 @@ public class MetricItemController {
      * @return
      */
     @GetMapping("/metrics/summarystatistics")
-    public List<SummaryStatistics> getSummaryStatistics(@RequestBody MetricSummary metricSummary , HttpServletResponse response) {
+    public List<SummaryStatistics> getSummaryStatistics(@RequestBody List<String> metricSummary , HttpServletResponse response) {
 
         List<SummaryStatistics> summaryStatistics = null;
         try {

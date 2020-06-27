@@ -2,10 +2,9 @@ package com.metrics.api.repository;
 
 
 import com.metrics.api.constants.ErrorCodes;
-import com.metrics.api.datatransferobjects.MetricItemDTO;
+import com.metrics.api.datatransferobjects.SaveItemDTO;
 import com.metrics.api.datatransferobjects.UpdateItemDTO;
 import com.metrics.api.model.MetricItem;
-import com.metrics.api.model.MetricSummary;
 import com.metrics.api.model.SummaryStatistics;
 import org.springframework.stereotype.Service;
 
@@ -22,22 +21,22 @@ public class CustomMetricRepository implements MetricRepository {
 
 
     /**
-     * API to save Metric Item Time Complexity -> O(metricItems.size()) / Space Complexity -> O(# OF Metrics ) + O(metricItems.size())
+     * API to save Metric Item
      *
      * @param metricItems - MetricItem Data Object
      * @return metricItem - Newly Saved Metric Item
      */
     @Override
-    public List<MetricItem> save(List<MetricItemDTO> metricItems) {
+    public List<MetricItem> save(List<SaveItemDTO> metricItems) {
 
         List<MetricItem> savedMetrics = new ArrayList<>();
 
         try {
             for (int i = 0; i < metricItems.size(); i++) {
-                MetricItemDTO metricItemDTO = metricItems.get(i);
-                List<Double> values = new ArrayList<>(Arrays.asList(Double.valueOf(metricItemDTO.getValue())));
+                SaveItemDTO saveItemDTO = metricItems.get(i);
+                List<Double> values = new ArrayList<>(Arrays.asList(Double.valueOf(saveItemDTO.getValue())));
                 UUID metricId = UUID.randomUUID();
-                MetricItem metricItem = new MetricItem(metricId, metricItemDTO.getName(), values);
+                MetricItem metricItem = new MetricItem(metricId, saveItemDTO.getName(), values);
                 store.put(metricId, metricItem);
                 savedMetrics.add(metricItem);
             }
@@ -52,7 +51,7 @@ public class CustomMetricRepository implements MetricRepository {
 
 
     /**
-     * API to Retrieve details about a metric ( Time Complexity O(1) Given Equal Distribution buckets / Space Complexity O(# OF METRICS)
+     * API to Retrieve details about a metric
      *
      * @param id - UUID of Metric
      * @return MetricItem -  containing values and name of metric
@@ -67,16 +66,15 @@ public class CustomMetricRepository implements MetricRepository {
     }
 
     /**
-     * API to retrieve Summary Statistics ( Time Complexity O( # OF DataPoints in Metrics) , Space Complexiity O(# OF METRICS)
+     * API to retrieve Summary Statistics
      *
-     * @param metricSummary List of UUIds to view Summaries
+     * @param uuids List of UUIds to view Summaries
      * @return Summary Statistics of Metric including mean , median , minimum value , and maximum value
      * @throws MetricDoestNotExistException
      */
     @Override
-    public List<SummaryStatistics> findStatsForMetric(MetricSummary metricSummary) throws MetricDoestNotExistException {
+    public List<SummaryStatistics> findStatsForMetric(List<String> uuids) throws MetricDoestNotExistException {
         List<SummaryStatistics> summaryStatistics = new ArrayList<>();
-        List<String> uuids = metricSummary.getMetricIds();
         for (int i = 0; i < uuids.size(); i++) {
             String uuid = uuids.get(i);
             List<Double> values = store.get(UUID.fromString(uuid)).getValues();

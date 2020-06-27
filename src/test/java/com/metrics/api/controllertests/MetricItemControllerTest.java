@@ -3,7 +3,7 @@ package com.metrics.api.controllertests;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.metrics.api.controller.MetricItemController;
-import com.metrics.api.datatransferobjects.MetricItemDTO;
+import com.metrics.api.datatransferobjects.SaveItemDTO;
 import com.metrics.api.datatransferobjects.UpdateItemDTO;
 import com.metrics.api.model.MetricItem;
 import com.metrics.api.repository.MetricDoestNotExistException;
@@ -48,13 +48,13 @@ public class MetricItemControllerTest {
     @Test
     public void register_metric() throws Exception {
 
-        MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "200.00");
-        List<Double> values = new ArrayList<>(Arrays.asList(Double.valueOf(metricItemDTO.getValue())));
+        SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", "200.00");
+        List<Double> values = new ArrayList<>(Arrays.asList(Double.valueOf(saveItemDTO.getValue())));
 
-        MetricItem metricItem = new MetricItem(UUID.randomUUID(), metricItemDTO.getName(), values);
-        List<MetricItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(metricItemDTO));
+        MetricItem metricItem = new MetricItem(UUID.randomUUID(), saveItemDTO.getName(), values);
+        List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO));
         List<MetricItem> createdMetrics = new ArrayList<>(Arrays.asList(metricItem));
-        given(metricRepository.save(new ArrayList<MetricItemDTO>(Arrays.asList(metricItemDTO)))).willReturn(createdMetrics);
+        given(metricRepository.save(new ArrayList<SaveItemDTO>(Arrays.asList(saveItemDTO)))).willReturn(createdMetrics);
 
         mockMvc.perform(post("/metrics")
                 .content(asJsonString(postedMetrics))
@@ -103,7 +103,7 @@ public class MetricItemControllerTest {
         UUID metricId = UUID.randomUUID();
         List<Double> values = new ArrayList<Double>(Arrays.asList(232.300));
         MetricItem metricItem = new MetricItem(metricId, "Apple", values);
-        MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "123.00");
+        SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", "123.00");
 
 
         given(metricRepository.find(metricId.toString())).willThrow(MetricDoestNotExistException.class);

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MetricItemDTO {
+public class SaveItemDTO {
     private String name;
     private String value;
 }

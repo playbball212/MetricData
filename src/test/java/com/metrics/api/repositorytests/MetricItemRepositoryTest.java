@@ -1,20 +1,16 @@
 package com.metrics.api.repositorytests;
 
-import com.metrics.api.datatransferobjects.MetricItemDTO;
+import com.metrics.api.datatransferobjects.SaveItemDTO;
 import com.metrics.api.datatransferobjects.UpdateItemDTO;
 import com.metrics.api.model.MetricItem;
 import com.metrics.api.repository.CustomMetricRepository;
 import com.metrics.api.repository.MetricAlreadyExistsException;
 import com.metrics.api.repository.MetricDoestNotExistException;
-import com.metrics.api.repository.MetricRepository;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
 
@@ -40,8 +36,8 @@ public class MetricItemRepositoryTest {
 
     @Test
     public void save_metric() throws MetricAlreadyExistsException {
-        MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "200.00");
-        List<MetricItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(metricItemDTO));
+        SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", "200.00");
+        List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO));
         List<MetricItem> metricItem = customMetricRepository.save(postedMetrics);
         assertThat(metricItem.size()).isEqualTo(1);
     }
@@ -56,12 +52,12 @@ public class MetricItemRepositoryTest {
     public void retrieve_metric_invalid_uuid_non_happy_path() throws MetricAlreadyExistsException {
         UUID uuid = UUID.randomUUID();
         // Save Metric
-        MetricItemDTO metricItemDTO2 = new MetricItemDTO("Apple", "200.00");
-        List<MetricItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(metricItemDTO2));
+        SaveItemDTO saveItemDTO2 = new SaveItemDTO("Apple", "200.00");
+        List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO2));
 
         List<MetricItem> metricItem2 = customMetricRepository.save(postedMetrics);
         Exception exception = assertThrows(MetricDoestNotExistException.class, () -> {
-            MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "asd");
+            SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", "asd");
             MetricItem metricItem = customMetricRepository.find(uuid.toString());
         });
 
@@ -79,8 +75,8 @@ public class MetricItemRepositoryTest {
     @Test
     public void retrieve_metric_valid_uuid() throws MetricDoestNotExistException, MetricAlreadyExistsException {
         // Save Metric
-        MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "200.00");
-        List<MetricItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(metricItemDTO));
+        SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", "200.00");
+        List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO));
 
         List<MetricItem> metricItems = customMetricRepository.save(postedMetrics);
 
@@ -102,8 +98,8 @@ public class MetricItemRepositoryTest {
     public void update_metric_valid_uuid() throws MetricDoestNotExistException, MetricAlreadyExistsException {
 
         // Save Metric
-        MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "200.00");
-        List<MetricItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(metricItemDTO));
+        SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", "200.00");
+        List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO));
 
         List<MetricItem> metricItems = customMetricRepository.save(postedMetrics);
         UpdateItemDTO metricItemDTO1 = new UpdateItemDTO(metricItems.get(0).getId(), "210.00");
