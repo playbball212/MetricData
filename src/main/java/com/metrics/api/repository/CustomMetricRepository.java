@@ -23,17 +23,17 @@ public class CustomMetricRepository implements MetricRepository {
     /**
      * API to save Metric Item
      *
-     * @param metricItems - MetricItem Data Object
+     * @param postedMetrics - MetricItem Data Object
      * @return metricItem - Newly Saved Metric Item
      */
     @Override
-    public List<MetricItem> save(List<SaveItemDTO> metricItems) {
+    public List<MetricItem> save(List<SaveItemDTO> postedMetrics) {
 
         List<MetricItem> savedMetrics = new ArrayList<>();
 
 
-        for (int i = 0; i < metricItems.size(); i++) {
-            SaveItemDTO saveItemDTO = metricItems.get(i);
+        for (int i = 0; i < postedMetrics.size(); i++) {
+            SaveItemDTO saveItemDTO = postedMetrics.get(i);
             List<Double> values = new ArrayList<>(Arrays.asList(Double.valueOf(saveItemDTO.getValue())));
             UUID metricId = UUID.randomUUID();
             MetricItem metricItem = new MetricItem(metricId, saveItemDTO.getName(), values);
@@ -48,7 +48,7 @@ public class CustomMetricRepository implements MetricRepository {
 
 
     /**
-     * API to Retrieve details about a metric
+     * HELPER API FOR TESTING
      *
      * @param id - UUID of Metric
      * @return MetricItem -  containing values and name of metric

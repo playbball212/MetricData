@@ -61,10 +61,10 @@ public class MetricItemController {
      *
      * @param id
      * @param response MetricItem ( Name , UUID , List of Double Values)
-     * @return
+     * @return Details about a Particular Metric
      */
     @GetMapping("/metrics/{id}")
-    public MetricItem getMetric(@PathVariable String id, HttpServletResponse response) {
+    public MetricItem helperMethod(@PathVariable String id, HttpServletResponse response) {
 
         try {
             return customMetricRepository.find(id);
