@@ -30,8 +30,9 @@ public class MetricItemController {
 
     /**
      * API to Register Metric
+     *
      * @param metricItemDTO
-     * @param response MetricItem ( Name , List of  Double , UUID)
+     * @param response      MetricItem ( Name , List of  Double , UUID)
      * @return
      */
     @PostMapping("/metrics")
@@ -56,6 +57,7 @@ public class MetricItemController {
 
     /**
      * API to retrieve details about a particular Metric
+     *
      * @param id
      * @param response MetricItem ( Name , UUID , List of Double Values)
      * @return
@@ -95,14 +97,15 @@ public class MetricItemController {
 
     /**
      * API to update Metric based on new double values
-     * @param id    UUID
+     *
+     * @param id            UUID
      * @param metricItemDTO MetricItemDTO ( persistent enties should not be used as requestbody)
      * @param response
      * @return MetricItem item - Updated with new values
      * @throws IOException
      */
     @PutMapping("/metrics/{id}")
-    public MetricItem updateMetric(@PathVariable String id, @RequestBody MetricItemDTO metricItemDTO, HttpServletResponse response)  {
+    public MetricItem updateMetric(@PathVariable String id, @RequestBody MetricItemDTO metricItemDTO, HttpServletResponse response) {
 
         MetricItem item = null;
 

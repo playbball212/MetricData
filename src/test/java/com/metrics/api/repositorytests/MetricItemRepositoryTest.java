@@ -179,7 +179,11 @@ public class MetricItemRepositoryTest {
 
     }
 
-
+    /**
+     * Test SUMMARY STATISTICS METHOD WITH VALID UUID. Should return a non null value.
+     * @throws MetricDoestNotExistException
+     * @throws MetricAlreadyExistsException
+     */
     @Test
     public void get_summary_statistics() throws MetricDoestNotExistException, MetricAlreadyExistsException {
 
@@ -194,6 +198,22 @@ public class MetricItemRepositoryTest {
         DoubleSummaryStatistics statistics = customMetricRepository.findStatsForMetric(metricItem.getId().toString());
 
         assertThat(statistics).isNotNull();
+
+    }
+
+    /**
+     * Test a non valid UUID for MetricDoesNotExistException
+     * @throws MetricDoestNotExistException
+     * @throws MetricAlreadyExistsException
+     */
+    @Test
+    public void get_summary_statistics_non_happy_path() throws MetricDoestNotExistException, MetricAlreadyExistsException {
+
+
+        Exception exception = assertThrows(MetricDoestNotExistException.class, () -> {
+            customMetricRepository.findStatsForMetric(UUID.randomUUID().toString());
+
+        });
 
     }
 

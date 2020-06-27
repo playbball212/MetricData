@@ -146,14 +146,13 @@ public class MetricItemControllerTest {
         MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "123.00");
 
 
-        given(metricRepository.update(metricId.toString() ,  metricItemDTO)).willThrow(NumberFormatException.class);
+        given(metricRepository.update(metricId.toString(), metricItemDTO)).willThrow(NumberFormatException.class);
 
         mockMvc.perform(put("/metrics/" + metricId)
                 .content(asJsonString(metricItemDTO))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound());
-
 
 
     }
@@ -184,6 +183,28 @@ public class MetricItemControllerTest {
         Mockito.verify(metricRepository, times(1)).find(metricId.toString());
 
 
+    }
+
+
+    /**
+     * TEST  API_TO_RETRIEVE_METRIC_DETAILS_NON_HAPPY_PATH
+     * Should Return MetricItem
+     */
+    @Test
+    public void find_metric_non_hapy_path_uuid_does_not_exist() throws Exception {
+        UUID metricId = UUID.randomUUID();
+        List<Double> values = new ArrayList<Double>(Arrays.asList(232.300));
+        MetricItem metricItem = new MetricItem(metricId, "Apple", values);
+        MetricItemDTO metricItemDTO = new MetricItemDTO("Apple", "123.00");
+
+
+        given(metricRepository.find(metricId.toString())).willThrow(MetricDoestNotExistException.class);
+
+        mockMvc.perform(get("/metrics/" + metricId)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andDo(print())
+
+                .andExpect(status().isNotFound());
 
 
     }
@@ -213,6 +234,32 @@ public class MetricItemControllerTest {
 
                 .andExpect(status().isOk());
 
+
+    }
+
+
+    /**
+     * TEST  API_TO_GET_SUMMARY_STATISTICS NON_HAPPY_PATH ( VALID UUID)
+     * Should Return 200 AND SummaryResponse
+     */
+    @Test
+    public void find_summarystats_non_happy_path_uuid_doesnt_exist() throws Exception {
+        UUID metricId = UUID.randomUUID();
+
+        DoubleSummaryStatistics doubleSummaryStatistics = new DoubleSummaryStatistics();
+        doubleSummaryStatistics.accept(22.00);
+        doubleSummaryStatistics.accept(25.00);
+        doubleSummaryStatistics.accept(23.00);
+
+        given(metricRepository.findStatsForMetric(metricId.toString())).willThrow(MetricDoestNotExistException.class);
+
+        mockMvc.perform(get("/metrics/summarystatistics/" + metricId)
+
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andDo(print())
+
+
+                .andExpect(status().isNotFound());
 
 
     }
