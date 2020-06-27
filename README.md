@@ -30,8 +30,8 @@
         1.) Create a Metric - 
         
             
-            Time Complexity will be O(N) because were peforming N put operations which are constant time. As well as 
-            N Arraylist.add which takes O(1). 
+            Time Complexity will be O(N) because were peforming N put operations on a HashMap which are constant time. 
+            As well as  N Arraylist.add operations which takes O(1). 
             
             Space Complexity will O(N+M) because we need space for existing metrics as well as submitted metrics 
          
