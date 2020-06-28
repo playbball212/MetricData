@@ -27,28 +27,28 @@
             Let N = # OF Metrics submitted 
             Let V[M] = # of DataPoints for each metric 
         
-        1.) Create a Metric - 
+        **1.) Create a Metric -** 
         
             
-            Time Complexity will be O(N) because were peforming N Puts on a HashMap which will take constant time. We
-            are also performing N adds into an arraylist which will also be constant time. ( Unless There is a capacity
-            increase but the amortized cost of adding is O(1). 
+            _Time Complexity will be O(N)_ because we are peforming N Puts on a HashMap which will take constant time
+            given the equal distribution of keys . We are also performing N adds into an arraylist which will also be
+            constant time. Unless There is a capacity increase but the amortized cost of adding is O(1). 
             
-            Space Complexity will be  O(N+M) because we need space for existing metrics as well as submitted metrics 
+            _Space Complexity will be  O(N+M)_ because we need space for existing metrics as well as submitted metrics 
          
         
-        2.) Update a Metric - 
+        **2.) Update a Metric -** 
         
-            Time Complexity will be O(N) as N  (HashMap put / get) constant time. 
+            _Time Complexity will be O(N)_ as N  (HashMap put / get) constant time. 
             
-            Space Complexity will be O(N+M)
+            _Space Complexity will be O(N+M)_
             
-        3.) Get Summary Statistics - The Operation will iterate through all the Values of each metric
+        **3.) Get Summary Statistics -**
         
-            Time Complexity will be O( N * MAX(V[M]) ) - When we get the Summary Statistics we are peforming N lookups
+            _Time Complexity will be O( N * MAX(V[M]) )_ - When we get the Summary Statistics we are peforming N lookups
             to retrieve the lists of each metric. We are then iterating through each list to aggregate the statistics 
             to perform some arithmetic constant time operations. So we are performing at most N * MAX(V[N]) constant 
             time operations.  
             
-            The Space Complexity will be O(N+M) 
+            __The Space Complexity will be O(N+M)__ 
             
