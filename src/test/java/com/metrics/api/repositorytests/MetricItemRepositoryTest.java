@@ -53,10 +53,7 @@ public class MetricItemRepositoryTest {
     public void retrieve_metric_invalid_uuid_non_happy_path() throws MetricAlreadyExistsException {
         UUID uuid = UUID.randomUUID();
         // Save Metric
-        SaveItemDTO saveItemDTO2 = new SaveItemDTO("Apple", "200.00");
-        List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO2));
 
-        List<MetricItem> metricItem2 = customMetricRepository.save(postedMetrics);
         Exception exception = assertThrows(MetricDoestNotExistException.class, () -> {
             SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", "asd");
             MetricItem metricItem = customMetricRepository.find(uuid.toString());
@@ -161,6 +158,7 @@ public class MetricItemRepositoryTest {
         assertThat(summaryStatistics).isNotNull();
         assertThat(summaryStatistics.get(0).getMin()).isEqualTo(1.00);
         assertThat(summaryStatistics.get(0).getMax()).isEqualTo(9.00);
+        assertThat(summaryStatistics.get(0).getMedian()).isEqualTo(6.00);
         assertThat(summaryStatistics.get(0).getMean()).isEqualTo(5.285714285714286);
 
 

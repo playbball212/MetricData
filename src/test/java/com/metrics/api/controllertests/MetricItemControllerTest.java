@@ -75,7 +75,6 @@ public class MetricItemControllerTest {
     public void register_metric_non_happy_path() throws Exception {
 
         SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", "200.00");
-        List<Double> values = new ArrayList<>(Arrays.asList(Double.valueOf(saveItemDTO.getValue())));
 
         List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO));
 
@@ -126,9 +125,6 @@ public class MetricItemControllerTest {
     @Test
     public void update_metric_uuid_invalid_non_happy_path() throws Exception, MetricDoestNotExistException {
         UUID metricId = UUID.randomUUID();
-        List<Double> values = new ArrayList<Double>(Arrays.asList(232.300));
-        MetricItem metricItem = new MetricItem(metricId, "Apple", values);
-        List<MetricItem> metricItemList = new ArrayList<>(Arrays.asList(metricItem));
         UpdateItemDTO metricItemDTO = new UpdateItemDTO(metricId, "123.00");
         List<UpdateItemDTO> updateItemDTOS = new ArrayList<>(Arrays.asList(metricItemDTO));
 
