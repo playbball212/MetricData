@@ -31,9 +31,10 @@
         
             
             Time Complexity will be O(N) because were peforming N Puts on a HashMap which will take constant time. We
-            are also performing N adds into an arraylist which will also be constant time. 
+            are also performing N adds into an arraylist which will also be constant time. ( Unless There is a capacity
+            increase but the amortized cost of adding is O(1). 
             
-            Space Complexity will O(N+M) because we need space for existing metrics as well as submitted metrics 
+            Space Complexity will be  O(N+M) because we need space for existing metrics as well as submitted metrics 
          
         
         2.) Update a Metric - 
