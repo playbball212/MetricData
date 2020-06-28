@@ -3,12 +3,15 @@ package com.metrics.api.integrationtests;
 import com.metrics.api.datatransferobjects.SaveItemDTO;
 import com.metrics.api.datatransferobjects.UpdateItemDTO;
 import com.metrics.api.model.MetricItem;
+import com.metrics.api.model.SummaryStatistics;
 import com.metrics.api.repository.MetricRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -37,7 +40,7 @@ public class MetricIntegrationTest {
     public void register_metric() {
 
         SaveItemDTO saveItemDTO = new SaveItemDTO("Ford", "200.00");
-        SaveItemDTO saveItemDTO2 = new SaveItemDTO("Apple" ,  "212.00");
+        SaveItemDTO saveItemDTO2 = new SaveItemDTO("Apple", "212.00");
         List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO, saveItemDTO2));
 
         ResponseEntity<MetricItem[]> response = testRestTemplate.postForEntity("/metrics", postedMetrics, MetricItem[].class);
@@ -56,7 +59,6 @@ public class MetricIntegrationTest {
 
 
     /**
-     * IF I REGISTER A METRIC THAT DOES NOT EXIST AND HAS A VALID DOUBLE VALUE = Metric Should be Created ( Validated Earlier)
      * IF I UPDATE A METRIC THAT EXISTS THEN THE LIST OF VALUES SHOULD BE UPDATED.
      */
     @Test
