@@ -136,7 +136,6 @@ public class MetricItemControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
 
-        Mockito.verify(metricRepository, times(1)).update(updateItemDTOS);
 
 
     }

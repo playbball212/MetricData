@@ -74,6 +74,9 @@ public class CustomMetricRepository implements MetricRepository {
         List<SummaryStatistics> summaryStatistics = new ArrayList<>();
         for (int i = 0; i < uuids.size(); i++) {
             String uuid = uuids.get(i);
+            if (store.get(UUID.fromString(uuid)) == null) {
+                throw new MetricDoestNotExistException("Metric does not exist");
+            }
             List<Double> values = store.get(UUID.fromString(uuid)).getValues();
             DoubleSummaryStatistics doubleSummaryStatistics = values.stream().mapToDouble(d -> d).summaryStatistics();
             List<Double> sortedDouble = values.stream().sorted().collect(Collectors.toList());
@@ -120,6 +123,8 @@ public class CustomMetricRepository implements MetricRepository {
                 List<Double> values = store.get(metricId).getValues();
                 values.add(Double.valueOf(postedMetrics.get(i).getValue()));
                 updatedMetrics.add(new MetricItem(metricId, store.get(metricId).getName(), values));
+            } else {
+                throw new MetricDoestNotExistException("Metric Does not  Exist");
             }
         }
         return updatedMetrics;
