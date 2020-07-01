@@ -9,24 +9,25 @@ import com.metrics.api.model.SummaryStatistics;
 import com.metrics.api.repository.MetricAlreadyExistsException;
 import com.metrics.api.repository.MetricDoestNotExistException;
 import com.metrics.api.repository.MetricRepository;
+import com.metrics.api.repository.StatsRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import javax.validation.Valid;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 public class MetricItemController {
 
 
-    public MetricRepository customMetricRepository;
+    private final MetricRepository customMetricRepository;
 
-    @Autowired
-    public MetricItemController(MetricRepository customMetricRepository) {
-        this.customMetricRepository = customMetricRepository;
-    }
+
 
 
     /**
@@ -37,10 +38,11 @@ public class MetricItemController {
      * @return savedMetrics - Newly Saved Metrics
      */
     @PostMapping("/metrics")
-    public List<MetricItem> saveMetric(@RequestBody List<SaveItemDTO> saveItemDTO, HttpServletResponse response) {
+    public List<MetricItem> saveMetric( @Valid @RequestBody List<SaveItemDTO> saveItemDTO, HttpServletResponse response) {
         List<MetricItem> savedMetrics = null;
 
         try {
+
             savedMetrics = customMetricRepository.save(saveItemDTO);
             response.setStatus(201);
         } catch (NullPointerException | NumberFormatException | MetricAlreadyExistsException e) {

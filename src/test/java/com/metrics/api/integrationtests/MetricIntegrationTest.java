@@ -37,8 +37,8 @@ public class MetricIntegrationTest {
     @Test
     public void register_metric() {
 
-        SaveItemDTO saveItemDTO = new SaveItemDTO("Ford", "200.00");
-        SaveItemDTO saveItemDTO2 = new SaveItemDTO("Apple", "212.00");
+        SaveItemDTO saveItemDTO = new SaveItemDTO("Ford", 212.00);
+        SaveItemDTO saveItemDTO2 = new SaveItemDTO("Apple", 212.00);
         List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO, saveItemDTO2));
 
         ResponseEntity<MetricItem[]> response = testRestTemplate.postForEntity("/metrics", postedMetrics, MetricItem[].class);
@@ -62,7 +62,7 @@ public class MetricIntegrationTest {
     @Test
     public void update_metric() {
 
-        SaveItemDTO saveItemDTO = new SaveItemDTO("Facebook", "200.00");
+        SaveItemDTO saveItemDTO = new SaveItemDTO("Facebook", 200.00);
         List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO));
         ResponseEntity<MetricItem[]> responseEntity = testRestTemplate.postForEntity("/metrics", postedMetrics, MetricItem[].class);
 

@@ -37,7 +37,7 @@ public class MetricItemRepositoryTest {
 
     @Test
     public void save_metric() throws MetricAlreadyExistsException {
-        SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", "200.00");
+        SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", 200.00);
         List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO));
         List<MetricItem> metricItem = customMetricRepository.save(postedMetrics);
         assertThat(metricItem.size()).isEqualTo(1);
@@ -72,7 +72,7 @@ public class MetricItemRepositoryTest {
     @Test
     public void retrieve_metric_valid_uuid() throws MetricDoestNotExistException, MetricAlreadyExistsException {
         // Save Metric
-        SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", "200.00");
+        SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", 200.00);
         List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO));
 
         List<MetricItem> metricItems = customMetricRepository.save(postedMetrics);
@@ -105,10 +105,10 @@ public class MetricItemRepositoryTest {
     // Helper Method
     private List<MetricItem> saveAndUpdateMetric() throws MetricDoestNotExistException {
         // Save Metric
-        SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", "1.00");
-        SaveItemDTO saveItemDTO2 = new SaveItemDTO("Ford", "1.00");
-        SaveItemDTO saveItemDTO3 = new SaveItemDTO("Microsoft", "1.00");
-        SaveItemDTO saveItemDTO4 = new SaveItemDTO("Microsoft", "2.00");
+        SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", 1.00);
+        SaveItemDTO saveItemDTO2 = new SaveItemDTO("Ford", 1.00);
+        SaveItemDTO saveItemDTO3 = new SaveItemDTO("Microsoft", 1.00);
+        SaveItemDTO saveItemDTO4 = new SaveItemDTO("Microsoft", 2.00);
 
         List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO, saveItemDTO2, saveItemDTO3, saveItemDTO4));
 

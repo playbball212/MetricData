@@ -22,6 +22,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	testCompile 'junit:junit:4.12'
+	// https://mvnrepository.com/artifact/javax.validation/validation-api
+	compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+	// https://mvnrepository.com/artifact/javax.validation/validation-api
+	compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+
 	compile 'io.springfox:springfox-swagger2:2.7.0'
 	compile 'io.springfox:springfox-swagger-ui:2.7.0'
 	annotationProcessor 'org.projectlombok:lombok'

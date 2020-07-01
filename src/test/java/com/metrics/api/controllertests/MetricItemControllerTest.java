@@ -48,13 +48,13 @@ public class MetricItemControllerTest {
     @Test
     public void register_metric() throws Exception {
 
-        SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", "200.00");
+        SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", 200.00);
         List<Double> values = new ArrayList<>(Arrays.asList(Double.valueOf(saveItemDTO.getValue())));
 
         MetricItem metricItem = new MetricItem(UUID.randomUUID(), saveItemDTO.getName(), values);
         List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO));
         List<MetricItem> createdMetrics = new ArrayList<>(Arrays.asList(metricItem));
-        given(metricRepository.save(new ArrayList<SaveItemDTO>(Arrays.asList(saveItemDTO)))).willReturn(createdMetrics);
+        given(metricRepository.save(new ArrayList<>(Arrays.asList(saveItemDTO)))).willReturn(createdMetrics);
 
         mockMvc.perform(post("/metrics")
                 .content(asJsonString(postedMetrics))
@@ -74,7 +74,7 @@ public class MetricItemControllerTest {
     @Test
     public void register_metric_non_happy_path() throws Exception {
 
-        SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", "200.00");
+        SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", 200.00);
 
         List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO));
 
