@@ -48,7 +48,7 @@
             _Time Complexity will be O( N * (MAX(V[M]) * log(MAX(V[M])  )_ - When we get the Summary Statistics we are peforming N lookups
             to retrieve the lists of each metric. We are then iterating through each list to aggregate the statistics 
             to perform some arithmetic constant time operations & peforming a sort ( best sort time is usually more than size of input
-            . So we are performing at most N * MAX(V[N]) constant 
+            
             time operations.  
             
             __The Space Complexity will be O(N+M)__ 
