@@ -47,7 +47,8 @@
         
             _Time Complexity will be O( N * (MAX(V[M]) * log(MAX(V[M]))  )_ - When we get the Summary Statistics we are 
             peforming N lookups to retrieve the lists of each metric. Retrieving the min , max , and average will be 
-            constant time operations because we are  tracking min/max/mean with each new value added
+            constant time operations because we are  tracking min/max/mean with each new value added. Finding the median
+            will require us to sort the list which will generally take longer than the input size. 
             
             
             time operations.  
