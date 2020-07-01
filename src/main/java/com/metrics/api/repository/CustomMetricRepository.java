@@ -19,7 +19,6 @@ public class CustomMetricRepository implements MetricRepository {
 
     private final ConcurrentHashMap<UUID, MetricItem> store = new ConcurrentHashMap<>();
 
-
     /**
      * API to save Metric Item
      *
@@ -55,7 +54,16 @@ public class CustomMetricRepository implements MetricRepository {
      */
     @Override
     public MetricItem find(String id) throws MetricDoestNotExistException {
-        return store.get(UUID.fromString(id));
+        try {
+            MetricItem item = store.get(UUID.fromString(id));
+            if (item != null) {
+                return item;
+            } else {
+                throw new MetricDoestNotExistException("Metric does not exist");
+            }
+        } catch (IllegalArgumentException | MetricDoestNotExistException e) {
+                throw e;
+        }
     }
 
     /**

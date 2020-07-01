@@ -55,8 +55,7 @@ public class MetricItemRepositoryTest {
         // Save Metric
 
         Exception exception = assertThrows(MetricDoestNotExistException.class, () -> {
-            SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", "asd");
-            MetricItem metricItem = customMetricRepository.find(uuid.toString());
+            customMetricRepository.find(uuid.toString());
         });
 
         assertThat(exception.getMessage()).isNotNull();

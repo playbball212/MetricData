@@ -66,9 +66,15 @@ public class MetricItemController {
         try {
             return customMetricRepository.find(id);
         } catch (NullPointerException | MetricDoestNotExistException | NumberFormatException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, ErrorCodes.UUID_NOT_FOUND, e);
 
+            if (e instanceof MetricDoestNotExistException) {
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, ErrorCodes.UUID_NOT_FOUND, e);
+            }
+            else {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, ErrorCodes.UUID_NOT_FOUND, e);
+            }
         }
     }
 
