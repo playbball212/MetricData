@@ -55,11 +55,7 @@ public class CustomMetricRepository implements MetricRepository {
      */
     @Override
     public MetricItem find(String id) throws MetricDoestNotExistException {
-        if (store.get(UUID.fromString(id)) != null) {
-            return store.get(UUID.fromString(id));
-        } else {
-            throw new MetricDoestNotExistException(ErrorCodes.METRIC_DOES_NOT_EXIST);
-        }
+        return store.get(UUID.fromString(id));
     }
 
     /**
@@ -96,7 +92,7 @@ public class CustomMetricRepository implements MetricRepository {
      * Helper Method to retrieve Median depending on size of values
      *
      * @param sortedDouble
-     * @return
+     * @return Median Value
      */
     private Double getMedian(List<Double> sortedDouble) {
         Double median;
@@ -112,7 +108,7 @@ public class CustomMetricRepository implements MetricRepository {
      * API to update metric with new value
      *
      * @param postedMetrics - posted metrics to be updated
-     * @return MetricItem - Newly updated metric
+     * @return updatedMetrics - Newly updated metrics
      */
     @Override
     public List<MetricItem> update(List<UpdateItemDTO> postedMetrics) throws MetricDoestNotExistException {

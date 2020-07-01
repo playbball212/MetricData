@@ -43,7 +43,7 @@ public class MetricItemControllerTest {
 
     /**
      * TEST API TO REGISTER_METRIC_HAPPY_PATH
-     * Should return 201  given the valid values ( Metric Name does not already exist / Double value given)
+     * Should return 201  given the valid values  -  Double value given)
      */
     @Test
     public void register_metric() throws Exception {
@@ -202,6 +202,9 @@ public class MetricItemControllerTest {
 
         UUID metricId = UUID.randomUUID();
         List<String> uuids = new ArrayList<>(Arrays.asList(metricId.toString()));
+
+        Map<Integer,Integer> map = new HashMap<>();
+
 
 
         given(metricRepository.findStatsForMetric(uuids)).willThrow(MetricDoestNotExistException.class);
