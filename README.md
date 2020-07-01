@@ -45,9 +45,11 @@
             
         **3.) Get Summary Statistics -**
         
-            _Time Complexity will be O( N * (MAX(V[M]) * log(MAX(V[M])  )_ - When we get the Summary Statistics we are peforming N lookups
-            to retrieve the lists of each metric. We are then iterating through each list to aggregate the statistics 
-            to perform some arithmetic constant time operations & peforming a sort ( best sort time is usually more than size of input
+            _Time Complexity will be O( N * (MAX(V[M]) * log(MAX(V[M]))  )_ - When we get the Summary Statistics we are 
+            peforming N lookups to retrieve the lists of each metric. Retrieving the min , max , and average will be 
+            constant time operations because when we updated the metric in step 2 we also updated the fields related
+            to the summary statistics 
+            
             
             time operations.  
             
