@@ -73,7 +73,7 @@ public class MetricIntegrationTest {
         // Size Originally will be One
         assertThat(metricItems.length).isEqualTo(1);
 
-        UpdateItemDTO metricItemDTO1 = new UpdateItemDTO(metricItems[0].getId(), "210.00");
+        UpdateItemDTO metricItemDTO1 = new UpdateItemDTO(metricItems[0].getId(), 210.00);
         List<UpdateItemDTO> updateItemDTOList = new ArrayList<>(Arrays.asList(metricItemDTO1));
 
         testRestTemplate.put("/metrics", updateItemDTOList);

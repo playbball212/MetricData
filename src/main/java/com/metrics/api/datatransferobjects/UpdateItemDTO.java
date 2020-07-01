@@ -12,6 +12,6 @@ import java.util.UUID;
 public class UpdateItemDTO {
 
     private UUID id;
-    private String value;
+    private Double value;
 
 }

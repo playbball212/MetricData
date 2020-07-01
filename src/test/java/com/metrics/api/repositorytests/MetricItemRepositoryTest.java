@@ -113,20 +113,20 @@ public class MetricItemRepositoryTest {
         List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO, saveItemDTO2, saveItemDTO3, saveItemDTO4));
 
         List<MetricItem> metricItems = customMetricRepository.save(postedMetrics);
-        UpdateItemDTO metricItemDTO1 = new UpdateItemDTO(metricItems.get(0).getId(), "3.00");
-        UpdateItemDTO metricItemDTO2 = new UpdateItemDTO(metricItems.get(0).getId(), "3.00");
-        UpdateItemDTO metricItemDTO3 = new UpdateItemDTO(metricItems.get(0).getId(), "6.00");
-        UpdateItemDTO metricItemDTO4 = new UpdateItemDTO(metricItems.get(0).getId(), "7.00");
-        UpdateItemDTO metricItemDTO5 = new UpdateItemDTO(metricItems.get(0).getId(), "8.00");
-        UpdateItemDTO metricItemDTO6 = new UpdateItemDTO(metricItems.get(0).getId(), "9.00");
+        UpdateItemDTO metricItemDTO1 = new UpdateItemDTO(metricItems.get(0).getId(), 3.00);
+        UpdateItemDTO metricItemDTO2 = new UpdateItemDTO(metricItems.get(0).getId(), 6.00);
+        UpdateItemDTO metricItemDTO3 = new UpdateItemDTO(metricItems.get(0).getId(), 6.00);
+        UpdateItemDTO metricItemDTO4 = new UpdateItemDTO(metricItems.get(0).getId(), 7.00);
+        UpdateItemDTO metricItemDTO5 = new UpdateItemDTO(metricItems.get(0).getId(), 8.00);
+        UpdateItemDTO metricItemDTO6 = new UpdateItemDTO(metricItems.get(0).getId(), 9.00);
 
-        UpdateItemDTO metricItemDTO9 = new UpdateItemDTO(metricItems.get(1).getId(), "1.00");
-        UpdateItemDTO metricItemDTO10 = new UpdateItemDTO(metricItems.get(1).getId(), "1.00");
-        UpdateItemDTO metricItemDTO11 = new UpdateItemDTO(metricItems.get(3).getId(), "1.00");
+        UpdateItemDTO metricItemDTO9 = new UpdateItemDTO(metricItems.get(1).getId(), 1.00);
+        UpdateItemDTO metricItemDTO10 = new UpdateItemDTO(metricItems.get(1).getId(), 1.00);
+        UpdateItemDTO metricItemDTO11 = new UpdateItemDTO(metricItems.get(3).getId(), 1.00);
 
 
-        UpdateItemDTO metricItemDTO7 = new UpdateItemDTO(metricItems.get(2).getId(), "8.00");
-        UpdateItemDTO metricItemDTO8 = new UpdateItemDTO(metricItems.get(2).getId(), "9.00");
+        UpdateItemDTO metricItemDTO7 = new UpdateItemDTO(metricItems.get(2).getId(), 8.00);
+        UpdateItemDTO metricItemDTO8 = new UpdateItemDTO(metricItems.get(2).getId(), 9.00);
 
 
         List<UpdateItemDTO> updateItemDTOList = new ArrayList<>(Arrays.asList(metricItemDTO1, metricItemDTO2,
@@ -158,7 +158,7 @@ public class MetricItemRepositoryTest {
         assertThat(summaryStatistics.get(0).getMin()).isEqualTo(1.00);
         assertThat(summaryStatistics.get(0).getMax()).isEqualTo(9.00);
         assertThat(summaryStatistics.get(0).getMedian()).isEqualTo(6.00);
-        assertThat(summaryStatistics.get(0).getMean()).isEqualTo(5.285714285714286);
+        assertThat(summaryStatistics.get(0).getMean()).isEqualTo(5.714285714285714);
 
 
         assertThat(summaryStatistics.get(1).getMin()).isEqualTo(1.00);

@@ -101,7 +101,7 @@ public class MetricItemControllerTest {
         List<Double> values = new ArrayList<Double>(Arrays.asList(232.300));
         MetricItem metricItem = new MetricItem(metricId, "Apple", values);
         List<MetricItem> metricItemList = new ArrayList<>(Arrays.asList(metricItem));
-        UpdateItemDTO metricItemDTO = new UpdateItemDTO(metricId, "123.00");
+        UpdateItemDTO metricItemDTO = new UpdateItemDTO(metricId, 123.00);
         List<UpdateItemDTO> updateItemDTOS = new ArrayList<>(Arrays.asList(metricItemDTO));
 
         given(metricRepository.update(updateItemDTOS)).willReturn(metricItemList);
@@ -125,7 +125,7 @@ public class MetricItemControllerTest {
     @Test
     public void update_metric_uuid_invalid_non_happy_path() throws Exception, MetricDoestNotExistException {
         UUID metricId = UUID.randomUUID();
-        UpdateItemDTO metricItemDTO = new UpdateItemDTO(metricId, "123.00");
+        UpdateItemDTO metricItemDTO = new UpdateItemDTO(metricId, 123.00);
         List<UpdateItemDTO> updateItemDTOS = new ArrayList<>(Arrays.asList(metricItemDTO));
 
         given(metricRepository.update(updateItemDTOS)).willThrow(MetricDoestNotExistException.class);

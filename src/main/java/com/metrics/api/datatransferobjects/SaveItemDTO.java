@@ -9,5 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SaveItemDTO {
     private String name;
+
+
     private Double value;
 }
