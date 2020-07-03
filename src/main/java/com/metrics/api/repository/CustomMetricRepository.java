@@ -53,7 +53,7 @@ public class CustomMetricRepository implements MetricRepository {
      * @return MetricItem -  containing values and name of metric
      */
     @Override
-    public MetricItem find(String id) throws MetricDoestNotExistException {
+    public MetricItem  find(String id) throws MetricDoestNotExistException {
         try {
             MetricItem item = store.get(UUID.fromString(id));
             if (item != null) {
@@ -127,6 +127,10 @@ public class CustomMetricRepository implements MetricRepository {
                 List<Double> values = store.get(metricId).getValues();
                 values.add(Double.valueOf(postedMetrics.get(i).getValue()));
                 updatedMetrics.add(new MetricItem(metricId, store.get(metricId).getName(), values));
+
+                // UPDATE AVERAGE , MIN , MAX
+
+
             } else {
                 throw new MetricDoestNotExistException("Metric Does not  Exist");
             }

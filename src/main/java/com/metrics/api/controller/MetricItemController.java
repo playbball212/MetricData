@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
 import javax.validation.Valid;
 
 import javax.servlet.http.HttpServletResponse;
@@ -28,8 +29,6 @@ public class MetricItemController {
     private final MetricRepository customMetricRepository;
 
 
-
-
     /**
      * API To Save Metrics
      *
@@ -38,14 +37,14 @@ public class MetricItemController {
      * @return savedMetrics - Newly Saved Metrics
      */
     @PostMapping("/metrics")
-    public List<MetricItem> saveMetric( @Valid @RequestBody List<SaveItemDTO> saveItemDTO, HttpServletResponse response) {
+    public List<MetricItem> saveMetric(@Valid @RequestBody List<SaveItemDTO> saveItemDTO, HttpServletResponse response) {
         List<MetricItem> savedMetrics = null;
 
         try {
 
             savedMetrics = customMetricRepository.save(saveItemDTO);
             response.setStatus(201);
-        } catch (NullPointerException | NumberFormatException | MetricAlreadyExistsException e) {
+        } catch (NumberFormatException | MetricAlreadyExistsException e) {
 
 
             throw new ResponseStatusException(
@@ -67,13 +66,12 @@ public class MetricItemController {
 
         try {
             return customMetricRepository.find(id);
-        } catch (NullPointerException | MetricDoestNotExistException | NumberFormatException e) {
+        } catch (IllegalArgumentException | NullPointerException | MetricDoestNotExistException e) {
 
             if (e instanceof MetricDoestNotExistException) {
                 throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, ErrorCodes.UUID_NOT_FOUND, e);
-            }
-            else {
+                        HttpStatus.NOT_FOUND, "Metric does not exist", e);
+            } else {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, ErrorCodes.UUID_NOT_FOUND, e);
             }
@@ -93,7 +91,7 @@ public class MetricItemController {
         List<SummaryStatistics> summaryStatistics = null;
         try {
             summaryStatistics = customMetricRepository.findStatsForMetric(metricSummary);
-        } catch (NullPointerException | MetricDoestNotExistException e) {
+        } catch (MetricDoestNotExistException e) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, ErrorCodes.UUID_NOT_FOUND, e);
 
