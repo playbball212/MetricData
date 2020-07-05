@@ -72,16 +72,16 @@ public class MetricItemController {
 
         try {
             return customMetricRepository.find(id);
-        } catch (IllegalArgumentException | NullPointerException | MetricDoestNotExistException e) {
+        } catch (MetricDoestNotExistException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Metric does not exist", e);
+        } catch (Exception e) {
 
-            if (e instanceof MetricDoestNotExistException) {
-                throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Metric does not exist", e);
-            } else {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, ErrorCodes.UUID_NOT_FOUND, e);
-            }
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, ErrorCodes.UUID_NOT_FOUND, e);
+
         }
+
     }
 
 
