@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.PriorityQueue;
+
 
 @Data
 @AllArgsConstructor
@@ -15,4 +17,6 @@ public class SummaryStatistics {
     private Double min;
     private Double max;
     private String id;
+    private PriorityQueue<Double> maintainOrder;
+
 }

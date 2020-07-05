@@ -68,21 +68,6 @@ public class CustomMetricRepository implements MetricRepository {
 
 
 
-    /**
-     * Helper Method to retrieve Median depending on size of values
-     *
-     * @param sortedDouble
-     * @return Median Value
-     */
-    private Double getMedian(List<Double> sortedDouble) {
-        Double median;
-        if (sortedDouble.size() % 2 != 0) {
-            median = sortedDouble.get(sortedDouble.size() / 2);
-        } else {
-            median = (sortedDouble.get((sortedDouble.size() - 1) / 2) + sortedDouble.get((sortedDouble.size() / 2)));
-        }
-        return median;
-    }
 
     /**
      * API to update metric with new value

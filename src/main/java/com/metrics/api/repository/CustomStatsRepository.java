@@ -5,10 +5,7 @@ import com.metrics.api.model.SummaryStatistics;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.DoubleSummaryStatistics;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -59,9 +56,11 @@ public class CustomStatsRepository implements StatsRepository {
 
     private void updateStats(MetricItem item) {
         SummaryStatistics previousStats = store.get(item.getId());
-
+        PriorityQueue<Double> maintainOrder = previousStats.getMaintainOrder();
         int count = item.getValues().size();
         double insertedItem = item.getValues().get(count - 1);
+        maintainOrder.add(insertedItem);
+
         // Calculate Average
         double sum = item.getValues().stream().mapToDouble(d -> d).sum();
 
@@ -77,12 +76,36 @@ public class CustomStatsRepository implements StatsRepository {
         if (insertedItem > previousStats.getMax()) {
             previousStats.setMax(insertedItem);
         }
+
+        previousStats.setMedian(getMedian(new ArrayList<Double>(maintainOrder)));
+
     }
 
     private void initializeStats(MetricItem item) {
         Double initialMetric = item.getValues().get(0);
         SummaryStatistics summaryStatistics = new SummaryStatistics(initialMetric, initialMetric, initialMetric,
-                initialMetric, item.getId().toString());
+                initialMetric, item.getId().toString(), new PriorityQueue<Double>());
         store.put(item.getId(), summaryStatistics);
+
+        PriorityQueue<Double> maintainOrder = summaryStatistics.getMaintainOrder();
+        maintainOrder.add(initialMetric);
+
+    }
+
+
+    /**
+     * Helper Method to retrieve Median depending on size of values
+     *
+     * @param sortedDouble
+     * @return Median Value
+     */
+    private Double getMedian(List<Double> sortedDouble) {
+        Double median;
+        if (sortedDouble.size() % 2 != 0) {
+            median = sortedDouble.get(sortedDouble.size() / 2);
+        } else {
+            median = (sortedDouble.get((sortedDouble.size() - 1) / 2) + sortedDouble.get((sortedDouble.size() / 2)));
+        }
+        return median;
     }
 }

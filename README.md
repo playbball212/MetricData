@@ -55,17 +55,17 @@ the metric in this request.
         
             _Time Complexity will be O(N)_ as N  (HashMap put / get) constant time. 
             
-            _Space Complexity will be O(N+M)_
+        
             
         **3.) Get Summary Statistics -**
         
-            _Time Complexity will be O( N * (MAX(V[M]) * log(MAX(V[M]))  )_ - When we get the Summary Statistics we are 
+            _Time Complexity will be O( N * (MAX(V[M]) )_ - When we get the Summary Statistics we are 
             peforming N lookups to retrieve the lists of each metric. Retrieving the min , max , and average will be 
             constant time operations because we are  tracking min/max/mean with each new value added. Finding the median
-            will require us to sort the list which will generally take longer than the input size. 
+            will also be constant time if we maintain a heap on each insert the values will remain sorted. 
+            ********PriorityQueue********** 
             
             
           
-            
-            __The Space Complexity will be O(N+M)__ 
+          
             
