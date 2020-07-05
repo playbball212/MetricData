@@ -15,7 +15,6 @@ public interface MetricRepository {
 
     MetricItem find(String id) throws MetricDoestNotExistException;
 
-    List<SummaryStatistics> findStatsForMetric(List<String> metricSummary) throws MetricDoestNotExistException;
 
     List<MetricItem> update( List<UpdateItemDTO> metricItems) throws MetricDoestNotExistException;
 }

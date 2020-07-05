@@ -66,35 +66,7 @@ public class CustomMetricRepository implements MetricRepository {
         }
     }
 
-    /**
-     * API to retrieve Summary Statistics
-     *
-     * @param uuids List of UUIds to view Summaries
-     * @return Summary Statistics of Metric including mean , median , minimum value , and maximum value
-     * @throws MetricDoestNotExistException
-     */
-    @Override
-    public List<SummaryStatistics> findStatsForMetric(List<String> uuids) throws MetricDoestNotExistException {
-        List<SummaryStatistics> summaryStatistics = new ArrayList<>();
-        for (int i = 0; i < uuids.size(); i++) {
-            String uuid = uuids.get(i);
-            if (store.get(UUID.fromString(uuid)) == null) {
-                throw new MetricDoestNotExistException("Metric does not exist");
-            }
-            List<Double> values = store.get(UUID.fromString(uuid)).getValues();
-            DoubleSummaryStatistics doubleSummaryStatistics = values.stream().mapToDouble(d -> d).summaryStatistics();
-            List<Double> sortedDouble = values.stream().sorted().collect(Collectors.toList());
-            Double median = null;
 
-            median = getMedian(sortedDouble);
-
-            SummaryStatistics summaryStat = new SummaryStatistics(doubleSummaryStatistics.getAverage(), median,
-                    doubleSummaryStatistics.getMin(), doubleSummaryStatistics.getMax(), uuid);
-            summaryStatistics.add(summaryStat);
-        }
-
-        return summaryStatistics;
-    }
 
     /**
      * Helper Method to retrieve Median depending on size of values

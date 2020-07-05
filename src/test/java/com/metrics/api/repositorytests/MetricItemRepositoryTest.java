@@ -139,38 +139,7 @@ public class MetricItemRepositoryTest {
         return metricItems;
     }
 
-    /**
-     * Summary Statistics Should return correct min , max , mean
-     *
-     * @throws MetricDoestNotExistException
-     */
-    @Test
-    public void find_summary_statistics_valid_uuid() throws MetricDoestNotExistException {
 
-        List<MetricItem> postedMetrics = saveAndUpdateMetric();
-        List<String> uuids = new ArrayList<>(Arrays.asList(postedMetrics.get(0).getId().toString(),
-                postedMetrics.get(1).getId().toString(), postedMetrics.get(2).getId().toString(),
-                postedMetrics.get(3).getId().toString()));
-
-        List<SummaryStatistics> summaryStatistics = customMetricRepository.findStatsForMetric(uuids);
-
-        assertThat(summaryStatistics).isNotNull();
-        assertThat(summaryStatistics.get(0).getMin()).isEqualTo(1.00);
-        assertThat(summaryStatistics.get(0).getMax()).isEqualTo(9.00);
-        assertThat(summaryStatistics.get(0).getMedian()).isEqualTo(6.00);
-        assertThat(summaryStatistics.get(0).getMean()).isEqualTo(5.714285714285714);
-
-
-        assertThat(summaryStatistics.get(1).getMin()).isEqualTo(1.00);
-        assertThat(summaryStatistics.get(1).getMax()).isEqualTo(1.00);
-        assertThat(summaryStatistics.get(1).getMean()).isEqualTo(1.00);
-
-        assertThat(summaryStatistics.get(2).getMin()).isEqualTo(1.00);
-        assertThat(summaryStatistics.get(2).getMax()).isEqualTo(9.00);
-        assertThat(summaryStatistics.get(2).getMean()).isEqualTo(6.00);
-
-
-    }
 
 
 }

@@ -6,9 +6,9 @@ import com.metrics.api.controller.MetricItemController;
 import com.metrics.api.datatransferobjects.SaveItemDTO;
 import com.metrics.api.datatransferobjects.UpdateItemDTO;
 import com.metrics.api.model.MetricItem;
-import com.metrics.api.model.SummaryStatistics;
 import com.metrics.api.repository.MetricDoestNotExistException;
 import com.metrics.api.repository.MetricRepository;
+import com.metrics.api.repository.StatsRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -39,6 +39,10 @@ public class MetricItemControllerTest {
 
     @MockBean
     private MetricRepository metricRepository;
+
+
+    @MockBean
+    private StatsRepository statsRepository;
 
 
     /**
@@ -137,7 +141,6 @@ public class MetricItemControllerTest {
                 .andExpect(status().isNotFound());
 
 
-
     }
 
 
@@ -158,68 +161,6 @@ public class MetricItemControllerTest {
 
                 .andExpect(status().isNotFound());
 
-
-    }
-
-    /**
-     * Test API for getting Summary Statistics - It should return a List of SummaryStatistics
-     *
-     * @throws MetricDoestNotExistException
-     */
-    @Test
-    public void find_summary_statistics_uuid_exists() throws MetricDoestNotExistException {
-
-        UUID metricId = UUID.randomUUID();
-        List<String> uuids = new ArrayList<>(Arrays.asList(metricId.toString()));
-        SummaryStatistics summaryStat = new SummaryStatistics(22.0, 22.0, 22.0, 22.0, metricId.toString());
-
-
-        List<SummaryStatistics> groupStatistics = new ArrayList<>(Arrays.asList(summaryStat));
-        given(metricRepository.findStatsForMetric(uuids)).willReturn(groupStatistics);
-        try {
-            mockMvc.perform(get("/metrics/summarystatistics")
-                    .content(asJsonString(uuids))
-
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
-
-                    .andDo(print())
-
-                    .andExpect(status().isOk());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
-    /**
-     * Test API for getting Summary Statistics - UUID DOES NOT EXIST SHOULD GET BAD REQUEST
-     *
-     * @throws MetricDoestNotExistException
-     */
-    @Test
-    public void find_summary_statistics_uuid_non_happy_doesnt_exist() throws MetricDoestNotExistException {
-
-        UUID metricId = UUID.randomUUID();
-        List<String> uuids = new ArrayList<>(Arrays.asList(metricId.toString()));
-
-        Map<Integer,Integer> map = new HashMap<>();
-
-
-
-        given(metricRepository.findStatsForMetric(uuids)).willThrow(MetricDoestNotExistException.class);
-        try {
-            mockMvc.perform(get("/metrics/summarystatistics")
-                    .content(asJsonString(uuids))
-
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
-
-                    .andDo(print())
-
-                    .andExpect(status().isNotFound());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
     }
 

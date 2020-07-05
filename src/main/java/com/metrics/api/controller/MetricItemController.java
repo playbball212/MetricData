@@ -11,7 +11,6 @@ import com.metrics.api.repository.MetricDoestNotExistException;
 import com.metrics.api.repository.MetricRepository;
 import com.metrics.api.repository.StatsRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,6 +19,7 @@ import javax.validation.Valid;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
@@ -27,6 +27,8 @@ public class MetricItemController {
 
 
     private final MetricRepository customMetricRepository;
+
+    private final StatsRepository statsRepository;
 
 
     /**
@@ -44,6 +46,10 @@ public class MetricItemController {
 
             savedMetrics = customMetricRepository.save(saveItemDTO);
             response.setStatus(201);
+
+            // calculate Stats for each UUID
+            statsRepository.calculateStatsForMetrics(savedMetrics);
+
         } catch (NumberFormatException | MetricAlreadyExistsException e) {
 
 
@@ -86,11 +92,11 @@ public class MetricItemController {
      * @return List<SummaryStatistics> Summary Statistics for Metrics Specified </SummaryStatistics>
      */
     @GetMapping("/metrics/summarystatistics")
-    public List<SummaryStatistics> getSummaryStatistics(@RequestBody List<String> metricSummary) {
+    public List<SummaryStatistics> getSummaryStatistics(@RequestBody List<UUID> metricSummary) {
 
         List<SummaryStatistics> summaryStatistics = null;
         try {
-            summaryStatistics = customMetricRepository.findStatsForMetric(metricSummary);
+            summaryStatistics = statsRepository.findStatsForMetric(metricSummary);
         } catch (MetricDoestNotExistException e) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, ErrorCodes.UUID_NOT_FOUND, e);
@@ -112,6 +118,7 @@ public class MetricItemController {
 
         try {
             updatedMetricItemList = customMetricRepository.update(metricItems);
+            statsRepository.calculateStatsForMetrics(updatedMetricItemList);
 
 
         } catch (MetricDoestNotExistException | NumberFormatException e) {
