@@ -49,6 +49,7 @@ public class CustomStatsRepository implements StatsRepository {
 
             SummaryStatistics stat = store.get(uuid);
             PriorityQueue<Double> priorityQueue = stat.getMaintainOrder();
+
             List<Double> sortedValues = new ArrayList<>();
             while (!priorityQueue.isEmpty()) {
                 Double metric = priorityQueue.poll();
@@ -57,8 +58,9 @@ public class CustomStatsRepository implements StatsRepository {
 
             Double median = getMedian(sortedValues);
             stat.setMedian(median);
-            summaryStatistics.add(stat);
+            stat.setMaintainOrder(new PriorityQueue<>(sortedValues));
 
+            summaryStatistics.add(stat);
 
         }
 
