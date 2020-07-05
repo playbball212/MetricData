@@ -49,9 +49,12 @@ application should clear any data stored in memory by the app.
         **1.) Create a Metric -** 
         
             
-            _Time Complexity will be O(N * log(MAX(V[M]) )_ because we are peforming N Puts on a HashMap which will take
+            _Time Complexity will be O(N * log(MAX(V[M]) )_  We are peforming N Puts on a HashMap which will take
              constant time given the equal distribution of keys . We are also performing N adds into an arraylist which 
-             will also be  constant time. Unless There is a capacity increase but the amortized cost  of adding is O(1).
+             will also be constant time unless there is a capacity increase but given the rarity of that happening the 
+             amortized cost is O(1). ( As we insert elements  , we double capacity when the size of the array is a power
+             of 2. So after X elements , we double the capacity at array sizes 1 , 2 , 4 , 6 , 8. What then is the sum of
+             of X + X/2 + X/4 + X/8 + 1 ( Roughly 2X) 
              We are also adding elements to a min heap data structure which will take log(MAX(V[M]). 
             
          
