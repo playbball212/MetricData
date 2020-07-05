@@ -1,5 +1,5 @@
 This  Web API supports the following actions:
-1. Create a Metric – the API should allow the user to create metrics.
+1. Create a Metric – the API should allow the user to create metrics. Each metric will have a string qualifier and double value. 
 2. Post Values to a Metric - the API should allow the user to post a decimal value to a created
 metric. Please note that user should be able to create multiple metrics so you should be able to
 specify the metric in this request.
