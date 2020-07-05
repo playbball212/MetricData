@@ -1,4 +1,4 @@
-Your Web API should support the following actions:
+This  Web API supports the following actions:
 1. Create a Metric – the API should allow the user to create metrics.
 2. Post Values to a Metric - the API should allow the user to post a decimal value to a created
 metric. Please note that user should be able to create multiple metrics so you should be able to
