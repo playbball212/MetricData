@@ -12,6 +12,9 @@ d. Max value for metric
 Please note that user should be able to create multiple metrics so you should be able to specify
 the metric in this request.
 
+All data maintained by the app is ephemeral i.e., it is acceptable if all data stored by app is restarted the
+application should clear any data stored in memory by the app.
+
 
 -------------------Build Gradle Project - which will run tests------------------------------------
 
