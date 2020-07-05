@@ -20,6 +20,9 @@ application should clear any data stored in memory by the app.
 
     gradle clean build ( There are tests at the service level and controller level which 
     comprise the unit level tests. There are also some integration tests that will test the real apis
+    
+------------------- Install Lombok --------------------------------------------------------------------
+Intellij has a plugin for LOMBOK you can configure 
 
 --------------------TO BUILD AND RUN Containerized App---------------------------------
     
