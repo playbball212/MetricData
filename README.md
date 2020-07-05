@@ -58,7 +58,8 @@ application should clear any data stored in memory by the app.
         
         **2.) Update a Metric -** 
         
-            _Time Complexity will be O(N)_ as N  (HashMap put / get) constant time. 
+            _Time Complexity will be O(N * log(MAX(V[M])_ as N  (HashMap put / get) constant time. Same  Arguement  from
+            above 
             
         
             
