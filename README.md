@@ -43,17 +43,16 @@ application should clear any data stored in memory by the app.
         
             
             Let M = # OF Metrics Existing  
-            Let EV = MAX(M) - Metrics with most values 
             Let N = # OF Metrics submitted 
             Let V[M] = # of DataPoints for each metric 
         
         **1.) Create a Metric -** 
         
             
-            _Time Complexity will be O(N * log(EV) )_ because we are peforming N Puts on a HashMap which will take constant time
+            _Time Complexity will be O(N * log(MAX(V[M]) )_ because we are peforming N Puts on a HashMap which will take constant time
             given the equal distribution of keys . We are also performing N adds into an arraylist which will also be
             constant time. Unless There is a capacity increase but the amortized cost of adding is O(1). We are also
-            adding elements to a min heap data structure which will take log(EV). The Heap is maintaing order 
+            adding elements to a min heap data structure which will take log(MAX(V[M]). The Heap is maintaing order 
             
          
         
