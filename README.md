@@ -43,17 +43,18 @@ application should clear any data stored in memory by the app.
         
             
             Let M = # OF Metrics Existing  
+            Let EV = MAX(M) - Metrics with most values 
             Let N = # OF Metrics submitted 
             Let V[M] = # of DataPoints for each metric 
         
         **1.) Create a Metric -** 
         
             
-            _Time Complexity will be O(N)_ because we are peforming N Puts on a HashMap which will take constant time
+            _Time Complexity will be O(N * log(EV) )_ because we are peforming N Puts on a HashMap which will take constant time
             given the equal distribution of keys . We are also performing N adds into an arraylist which will also be
-            constant time. Unless There is a capacity increase but the amortized cost of adding is O(1). 
+            constant time. Unless There is a capacity increase but the amortized cost of adding is O(1). We are also
+            adding elements to a min heap data structure which will take log(EV). The Heap is maintaing order 
             
-            _Space Complexity will be  O(N+M)_ because we need space for existing metrics as well as submitted metrics 
          
         
         **2.) Update a Metric -** 
@@ -67,7 +68,7 @@ application should clear any data stored in memory by the app.
             _Time Complexity will be O( N * (MAX(V[M]) )_ - When we get the Summary Statistics we are 
             peforming N lookups to retrieve the lists of each metric. Retrieving the min , max , and average will be 
             constant time operations because we are  tracking min/max/mean with each new value added. Finding the median
-            will also be constant time if we maintain a heap on each insert the values will remain sorted. 
+            will be equivalent to the input size given we are iterating through the priority queue 
             ********PriorityQueue********** 
             
             
