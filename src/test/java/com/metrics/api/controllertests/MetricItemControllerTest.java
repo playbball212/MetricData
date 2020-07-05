@@ -72,30 +72,6 @@ public class MetricItemControllerTest {
 
 
     /**
-     * TEST API TO REGISTER_METRIC_NON_HAPPY_PATH
-     * Should return 400  given the invalid values ( Metric Name does not already exist / NON DOUBLE value given)
-     */
-    @Test
-    public void register_metric_non_happy_path() throws Exception {
-
-        SaveItemDTO saveItemDTO = new SaveItemDTO("Apple", 200.00);
-
-        List<SaveItemDTO> postedMetrics = new ArrayList<>(Arrays.asList(saveItemDTO));
-
-
-        given(metricRepository.save(new ArrayList<SaveItemDTO>(Arrays.asList(saveItemDTO)))).willThrow(NumberFormatException.class);
-
-        mockMvc.perform(post("/metrics")
-                .content(asJsonString(postedMetrics))
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
-                .andDo(print())
-
-                .andExpect(status().isBadRequest());
-
-    }
-
-
-    /**
      * TEST  API_TO_Update_Metric_HAPPY_PATH ( Given a Valid UUID / Valid Double Value)
      * Should Return 200 and the Metric Repository should have been called once
      */

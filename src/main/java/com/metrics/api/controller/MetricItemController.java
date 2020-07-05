@@ -50,7 +50,7 @@ public class MetricItemController {
             // calculate Stats for each UUID
             statsRepository.calculateStatsForMetrics(savedMetrics);
 
-        } catch (NumberFormatException | MetricAlreadyExistsException e) {
+        } catch (MetricAlreadyExistsException e) {
 
 
             throw new ResponseStatusException(
@@ -121,7 +121,7 @@ public class MetricItemController {
             statsRepository.calculateStatsForMetrics(updatedMetricItemList);
 
 
-        } catch (MetricDoestNotExistException | NumberFormatException e) {
+        } catch (MetricDoestNotExistException e) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, ErrorCodes.UUID_NOT_FOUND, e);
 
