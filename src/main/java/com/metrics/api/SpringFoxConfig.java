@@ -28,7 +28,7 @@ public class SpringFoxConfig {
 
     private ApiInfo getApiInfo() {
         return new ApiInfoBuilder()
-                .title("Reddit Clone API")
+                .title("Metric  API")
                 .version("1.0")
                 .description("API for Metric Data")
                 .contact(new Contact("Ankit Goel", "http://github.com/playbball212", "agoel3705@gmail.com"))
